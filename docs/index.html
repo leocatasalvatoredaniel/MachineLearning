@@ -1,0 +1,1961 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ripasso Python e NumPy ML4N</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: indice fisso a sinistra su desktop (due gruppi: Python e NumPy), colonna di lettura da ~70ch; su telefono l'indice diventa una barra orizzontale */
+:root {
+  --bg: #f6f7f8;
+  --surface: #ffffff;
+  --fg: #1c2530;
+  --muted: #5b6875;
+  --line: #dde2e7;
+  --accent: #0b6e8a;
+  --accent-soft: #e2f0f4;
+  --py: #6a4fb3;
+  --py-soft: #efebf8;
+  --code-bg: #eef1f4;
+  --out-bg: #fbfcfd;
+  --warn: #9a4a0a;
+  --warn-soft: #fdf1e4;
+  --ok: #1d6b3f;
+  --ok-soft: #e6f4ec;
+  --hl: #ffe08a;
+  --hl2: #bfe6f0;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171c; --surface: #1a2027; --fg: #e3e8ed; --muted: #97a3ae; --line: #2c353f;
+    --accent: #5cc3dd; --accent-soft: #173440; --py: #b3a0ec; --py-soft: #262036;
+    --code-bg: #20282f; --out-bg: #161c22;
+    --warn: #f0a868; --warn-soft: #33261a; --ok: #7fd3a1; --ok-soft: #17301f;
+    --hl: #6b5514; --hl2: #1f4f5e;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171c; --surface: #1a2027; --fg: #e3e8ed; --muted: #97a3ae; --line: #2c353f;
+  --accent: #5cc3dd; --accent-soft: #173440; --py: #b3a0ec; --py-soft: #262036;
+  --code-bg: #20282f; --out-bg: #161c22;
+  --warn: #f0a868; --warn-soft: #33261a; --ok: #7fd3a1; --ok-soft: #17301f;
+  --hl: #6b5514; --hl2: #1f4f5e;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { background: var(--bg); color: var(--fg); font: 16px/1.65 var(--body); }
+
+.shell { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 48px; max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+nav.toc { position: sticky; top: env(safe-area-inset-top, 0px); align-self: start; padding-block: 32px; max-height: 100vh; overflow-y: auto; }
+.toc p { font: 600 12px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; margin: 18px 0 8px; }
+.toc p.g-py { color: var(--py); }
+.toc p.g-np { color: var(--accent); }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; }
+.toc a { display: flex; gap: 10px; padding: 4px 10px; border-radius: 6px; color: var(--fg); text-decoration: none; font-size: 14px; line-height: 1.35; }
+.toc a span { font-family: var(--mono); min-width: 1.6em; font-size: 13px; }
+.toc .py a span { color: var(--py); }
+.toc .np a span { color: var(--accent); }
+.toc a:hover, .toc a:focus-visible { background: var(--accent-soft); outline: none; }
+
+main { min-width: 0; padding-block: 40px 96px; max-width: 72ch; }
+header.intro { margin-bottom: 40px; }
+.eyebrow { font: 600 12px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 14px; }
+h1 { font: 700 clamp(32px, 5vw, 44px)/1.08 var(--display); margin: 0 0 16px; text-wrap: balance; letter-spacing: -.01em; }
+.lede { font-size: 18px; color: var(--muted); margin: 0 0 20px; }
+.howto { padding: 16px 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; font-size: 15px; }
+.howto ul { margin: 8px 0 0; }
+
+.part { margin-top: 56px; padding: 22px 0 6px; border-top: 3px solid var(--py); }
+.part.np { border-top-color: var(--accent); }
+.part .eyebrow { color: var(--py); }
+.part.np .eyebrow { color: var(--accent); }
+.part h2.parttitle { font: 700 34px/1.1 var(--display); margin: 0 0 10px; }
+.part p { color: var(--muted); }
+
+section.chap { padding-top: 22px; margin-top: 36px; border-top: 1px solid var(--line); }
+h2 { font: 700 26px/1.2 var(--display); margin: 0 0 16px; display: flex; align-items: baseline; gap: 14px; text-wrap: balance; }
+h2 .num { font: 500 16px/1 var(--mono); color: var(--accent); flex: none; }
+.pysec h2 .num { color: var(--py); }
+h3 { font: 600 19px/1.3 var(--body); margin: 32px 0 10px; }
+p { margin: 0 0 14px; }
+ul, ol.plain { margin: 0 0 16px; padding-left: 22px; }
+li { margin-bottom: 6px; }
+code { font: 0.88em var(--mono); background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+strong { font-weight: 600; }
+dfn { font-style: normal; font-weight: 600; }
+
+.snippet { margin: 14px 0 20px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.snippet pre { margin: 0; padding: 14px 16px; overflow-x: auto; font: 14px/1.55 var(--mono); }
+.snippet pre code { background: none; padding: 0; font-size: inherit; }
+.snippet .code { background: var(--code-bg); }
+.snippet .out { border-top: 1px solid var(--line); background: var(--out-bg); position: relative; }
+.snippet .out::before { content: "output"; position: absolute; top: 8px; right: 12px; font: 500 11px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.snippet .out pre { color: var(--muted); }
+.c { color: var(--muted); font-style: italic; }
+.copy { display: block; margin-left: auto; font: 500 12px var(--body); color: var(--accent); background: none; border: 0; padding: 8px 14px 0; cursor: pointer; }
+.copy:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.table-wrap { overflow-x: auto; margin: 14px 0 20px; }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; font-size: 13px; color: var(--muted); letter-spacing: .02em; }
+td code { white-space: nowrap; }
+
+.trap, .rule, .back, .why { padding: 14px 16px; border-radius: 10px; margin: 18px 0; font-size: 15.5px; }
+.trap { background: var(--warn-soft); }
+.trap b { color: var(--warn); }
+.rule { background: var(--accent-soft); }
+.rule b { color: var(--accent); }
+.back { background: var(--py-soft); }
+.back b { color: var(--py); }
+.why { border: 1px solid var(--line); background: var(--surface); }
+.why b { color: var(--fg); }
+.trap p:last-child, .rule p:last-child, .back p:last-child, .why p:last-child { margin: 0; }
+.back a { color: var(--py); }
+
+details.predict { margin: 14px 0 22px; border: 1px dashed var(--accent); border-radius: 10px; background: var(--surface); }
+details.predict summary { cursor: pointer; padding: 12px 16px; font-weight: 500; list-style: none; display: flex; gap: 10px; align-items: baseline; }
+details.predict summary::-webkit-details-marker { display: none; }
+details.predict summary::before { content: "?"; font: 600 13px/22px var(--mono); flex: none; width: 22px; height: 22px; text-align: center; border-radius: 50%; background: var(--accent); color: var(--surface); }
+details.predict[open] summary::before { content: "✓"; background: var(--ok); }
+details.predict summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 10px; }
+details.predict .answer { padding: 0 16px 14px 48px; font-size: 15px; }
+details.predict .answer pre { margin: 6px 0 8px; font: 14px/1.5 var(--mono); color: var(--ok); overflow-x: auto; }
+.hint { font-size: 13px; color: var(--muted); font-weight: 400; }
+
+.ex { margin: 22px 0; padding: 12px 16px; border-left: 3px solid var(--accent); font-size: 15px; }
+.ex b { color: var(--accent); }
+.pysec .ex { border-left-color: var(--py); }
+.pysec .ex b { color: var(--py); }
+
+/* disegni di matrici */
+.fig { margin: 16px 0 22px; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow-x: auto; }
+.fig .row { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 22px; }
+.fig .cap { font-size: 13.5px; color: var(--muted); margin: 12px 0 0; }
+.mxw { display: grid; gap: 6px; justify-items: center; }
+.mxw .lbl { font: 500 12.5px/1.3 var(--mono); color: var(--muted); text-align: center; }
+.mx { display: inline-grid; gap: 3px; font: 500 14px/1 var(--mono); }
+.mx span { min-width: 34px; height: 34px; display: grid; place-items: center; background: var(--code-bg); border-radius: 4px; padding: 0 4px; }
+.mx span.h { background: var(--hl); }
+.mx span.h2 { background: var(--hl2); }
+.mx span.ghost { background: transparent; border: 1px dashed var(--muted); color: var(--muted); }
+.op { font: 500 20px var(--mono); color: var(--muted); }
+.axes { display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; gap: 6px 10px; align-items: center; }
+.axes .ax1 { grid-column: 2; font: 500 12.5px var(--mono); color: var(--accent); }
+.axes .ax0 { grid-row: 2; font: 500 12.5px var(--mono); color: var(--accent); writing-mode: vertical-rl; transform: rotate(180deg); }
+.mem { display: flex; gap: 3px; flex-wrap: wrap; font: 500 13px var(--mono); }
+.mem span { padding: 8px 10px; background: var(--code-bg); border-radius: 4px; }
+.mem span.ref { background: var(--py-soft); color: var(--py); }
+
+.glos { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 16px; margin: 14px 0 20px; font-size: 15px; }
+.glos dt { font-weight: 600; }
+.glos dd { margin: 0; }
+
+.recap { counter-reset: r; list-style: none; padding: 0; display: grid; gap: 10px; }
+.recap li { counter-increment: r; display: grid; grid-template-columns: 28px minmax(0,1fr); gap: 8px; margin: 0; }
+.recap li::before { content: counter(r); font: 500 15px/1.65 var(--mono); color: var(--accent); }
+
+footer { margin-top: 56px; font-size: 13px; color: var(--muted); }
+a { color: var(--accent); }
+
+@media (max-width: 860px) {
+  .shell { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 0 16px; }
+  nav.toc { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 2; background: var(--bg); padding-block: 8px; border-bottom: 1px solid var(--line); margin: 0 -16px; padding-inline: 16px; max-height: none; overflow: visible; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+  .toc p { display: none; }
+  .toc ol { display: flex; gap: 4px; }
+  .toc a { white-space: nowrap; font-size: 13px; padding: 5px 9px; background: var(--surface); border: 1px solid var(--line); }
+  main { padding-block: 24px 72px; }
+  details.predict .answer { padding-left: 16px; }
+  .glos { grid-template-columns: minmax(0, 1fr); gap: 2px 0; }
+  .glos dd { margin-bottom: 10px; }
+}
+</style>
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+
+<div class="shell">
+<nav class="toc" aria-label="Indice">
+  <p class="g-py">Parte 1 · Python</p>
+  <ol class="py">
+    <li><a href="#p1"><span>P1</span>Eseguire Python</a></li>
+    <li><a href="#p2"><span>P2</span>Variabili e oggetti</a></li>
+    <li><a href="#p3"><span>P3</span>Tipi base e stringhe</a></li>
+    <li><a href="#p4"><span>P4</span>Tuple e liste</a></li>
+    <li><a href="#p5"><span>P5</span>Set e dizionari</a></li>
+    <li><a href="#p6"><span>P6</span>Copie</a></li>
+    <li><a href="#p7"><span>P7</span>if, for, while</a></li>
+    <li><a href="#p8"><span>P8</span>Funzioni</a></li>
+    <li><a href="#p9"><span>P9</span>Lambda e comprehension</a></li>
+    <li><a href="#p10"><span>P10</span>Classi e metodi</a></li>
+    <li><a href="#p11"><span>P11</span>File ed errori</a></li>
+  </ol>
+  <p class="g-np">Parte 2 · NumPy</p>
+  <ol class="np">
+    <li><a href="#n0"><span>N0</span>Parole e matematica</a></li>
+    <li><a href="#n1"><span>N1</span>Perché NumPy</a></li>
+    <li><a href="#n2"><span>N2</span>Array, shape, dtype</a></li>
+    <li><a href="#n3"><span>N3</span>Calcolo</a></li>
+    <li><a href="#n4"><span>N4</span>Broadcasting</a></li>
+    <li><a href="#n5"><span>N5</span>Accesso agli array</a></li>
+    <li><a href="#n6"><span>N6</span>Manipolazione</a></li>
+    <li><a href="#quiz"><span>✓</span>Riassunto e quiz</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="intro">
+  <p class="eyebrow">ML4N · Lezioni 1 e 2 · Politecnico di Torino</p>
+  <h1>Ripasso di Python e NumPy</h1>
+  <p class="lede">Le due lezioni del prof. Galante spiegate da zero, nell'ordine delle slide. NumPy si appoggia su quasi tutto quello che c'è nella lezione di Python, quindi conviene partire da lì.</p>
+  <div class="howto"><strong>Come usare la pagina</strong>
+  <ul>
+    <li>Ogni blocco di codice ha sotto il suo <strong>output</strong> reale: li ho ottenuti eseguendo il codice, non scrivendoli a memoria. Il pulsante <strong>Copia</strong> copia il codice, che puoi incollare in una cella del notebook in VS Code.</li>
+    <li>Nei riquadri tratteggiati con <strong>?</strong> prova a rispondere prima di aprirli. Se sbagli, sai cosa ripassare.</li>
+    <li>I riquadri viola <strong>“Dalla lezione 1”</strong> nella parte NumPy ti rimandano al concetto Python da cui dipende quello che stai leggendo.</li>
+  </ul></div>
+</header>
+
+<!-- =================================================================== -->
+<div class="part">
+  <p class="eyebrow">Parte 1</p>
+  <h2 class="parttitle">Python</h2>
+  <p>Lezione 1. Notebook degli esercizi: <code>exercises/01_python/</code>.</p>
+</div>
+
+<!-- P1 -->
+<section class="chap pysec" id="p1">
+<h2><span class="num">P1</span>Eseguire un programma Python</h2>
+
+<h3>Cosa succede quando premi "Esegui"</h3>
+<p>Il processore del computer capisce solo istruzioni molto semplici, scritte in linguaggio macchina. Non capisce Python. Serve quindi un intermediario, e le cose vanno così:</p>
+<div class="snippet"><div class="code"><pre><code>il tuo file .py
+      │   Python lo traduce (in automatico)
+      ▼
+bytecode            una versione più semplice, vicina alla macchina
+      │   l'interprete lo esegue riga per riga
+      ▼
+risultato</code></pre></div></div>
+<ul>
+  <li>L'<dfn>interprete</dfn> è il programma <code>python</code> che hai installato. È lui che esegue il codice.</li>
+  <li>Il <dfn>bytecode</dfn> è la traduzione intermedia. Quando importi un file, Python ne salva il bytecode nella cartella <code>__pycache__/</code> per non doverlo ritradurre ogni volta. Se modifichi il file, se ne accorge e lo traduce di nuovo.</li>
+  <li>Il vantaggio: lo stesso file <code>.py</code> funziona su Windows, Mac e Linux, basta che ci sia un interprete. In C o C++ invece il programma va compilato separatamente per ogni sistema.</li>
+</ul>
+
+<h3>Eseguire uno script dal terminale</h3>
+<p>Uno <dfn>script</dfn> è semplicemente un file <code>.py</code>. Per eseguirlo servono due passi: entri nella cartella che lo contiene, poi lo passi all'interprete.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>cd Documenti\MioScript        <span class="c"># 1. entro nella cartella</span>
+python my_script.py           <span class="c"># 2. lo eseguo (su Mac/Linux spesso: python3)</span></code></pre></div></div>
+<p>Se sul computer hai più versioni di Python (tu ne hai due, la 3.11 e la 3.14), puoi vedere quale viene usata con <code>where.exe python</code> su Windows, o <code>which python3</code> su Mac/Linux. Viene usata la prima della lista.</p>
+
+<h3>Librerie: codice scritto da altri</h3>
+<p>Python da solo sa fare poche cose. NumPy, pandas, Matplotlib e scikit-learn sono <dfn>librerie</dfn>, cioè codice già pronto scritto da altri, che si scarica e si installa con <code>pip</code>:</p>
+<div class="snippet"><div class="code"><pre><code>pip install numpy</code></pre></div></div>
+
+<h3>Ambiente virtuale: una scatola per progetto</h3>
+<p>Immagina di avere due progetti: uno ha bisogno di NumPy 1.x, l'altro di NumPy 2.x. Se installi tutto nello stesso posto, uno dei due si rompe. Un <dfn>ambiente virtuale</dfn> (venv) risolve il problema: è una cartella, di solito chiamata <code>.venv</code>, con dentro un Python e delle librerie <strong>solo per quel progetto</strong>.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code><span class="c"># Windows (PowerShell)</span>
+python -m venv .venv          <span class="c"># 1. crea la cartella .venv</span>
+.venv\Scripts\activate        <span class="c"># 2. la attiva: compare (.venv) nel terminale</span>
+pip install numpy ipykernel   <span class="c"># 3. installa le librerie DENTRO .venv</span>
+
+<span class="c"># Mac / Linux</span>
+python3 -m venv .venv
+source .venv/bin/activate
+pip install numpy ipykernel</code></pre></div></div>
+<div class="trap"><p><b>Due trappole.</b> Su Windows, se l'attivazione dice <em>running scripts is disabled on this system</em>, esegui una volta <code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code>. E se crei il venv con <code>uv venv</code> invece che con <code>python -m venv</code>, dentro non c'è <code>pip</code>: è l'errore <em>No module named pip</em> che hai già incontrato.</p></div>
+<p>Il prof cita anche <strong>uv</strong>: uno strumento più recente che crea l'ambiente e installa le librerie molto più in fretta di pip. La repo del corso lo usa, ma per studiare non è necessario.</p>
+
+<h3>VS Code o notebook Jupyter?</h3>
+<p>Ci sono due modi di lavorare:</p>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>IDE (VS Code)</th><th>Notebook Jupyter</th></tr></thead>
+<tbody>
+<tr><td><strong>Cos'è</strong></td><td>Un editor per file <code>.py</code></td><td>Un documento fatto di celle (<code>.ipynb</code>)</td></tr>
+<tr><td><strong>Quando usarlo</strong></td><td>Progetti grandi, con tanti file</td><td>Prove, esercizi, analisi passo per passo</td></tr>
+<tr><td><strong>Punto di forza</strong></td><td>Debug e strumenti per scrivere codice</td><td>Vedi subito il risultato di ogni pezzo</td></tr>
+</tbody></table></div>
+<p>VS Code può aprire anche i notebook, ed è quello che stai facendo tu. Tre cose da sapere:</p>
+<ul>
+  <li><strong>In VS Code un progetto è una cartella</strong>: aprila con <em>File → Open Folder</em>, non aprendo il singolo file. Il supporto a Python arriva dall'estensione "Python", da installare nella barra delle estensioni.</li>
+  <li><strong>Un notebook è una sequenza di celle.</strong> Ci sono celle di testo (Markdown) e celle di codice. Una cella si esegue con <code>Shift+Invio</code>, e sotto compare il suo output.</li>
+  <li><strong>Tutte le celle condividono la memoria.</strong> Dietro c'è un solo processo Python, il <dfn>kernel</dfn>. Una variabile creata nella cella 1 esiste anche nella cella 5, ma solo se hai eseguito la cella 1 prima.</li>
+</ul>
+<div class="trap"><p><b>Trappola.</b> Se esegui le celle in ordine sparso, il notebook "ricorda" cose che magari hai già cancellato dal codice. Quando i risultati sembrano strani, usa <strong>Restart</strong> e poi <strong>Run All</strong>: si riparte da zero, in ordine.</p></div>
+</section>
+
+<!-- P2 -->
+<section class="chap pysec" id="p2">
+<h2><span class="num">P2</span>Variabili, oggetti, riferimenti</h2>
+<p>Questa è la sezione più importante della lezione 1, perché in NumPy torna di continuo. Vale la pena leggerla con calma.</p>
+
+<h3>Una sintassi senza fronzoli</h3>
+<p>Se hai visto Java o C, in Python mancano tre cose: il punto e virgola a fine riga, le graffe per i blocchi (si usa l'indentazione) e la dichiarazione del tipo delle variabili.</p>
+<div class="snippet"><div class="code"><pre><code><span class="c">// Java</span>
+List&lt;Integer&gt; l = new LinkedList&lt;&gt;();
+for (int i=0; i&lt;4; i++) {
+    l.add(i);
+}
+
+<span class="c"># Python: la stessa cosa</span>
+l = []
+for i in range(0, 4):
+    l.append(i)</code></pre></div></div>
+
+<h3>Ogni dato è un oggetto</h3>
+<p>In Python ogni dato, anche il numero 3, è un <dfn>oggetto</dfn>. Un oggetto ha tre caratteristiche:</p>
+<ul>
+  <li>un <strong>tipo</strong>: che genere di dato è (numero intero, testo…). Lo leggi con <code>type()</code>;</li>
+  <li>un <strong>identificativo</strong>: un numero che dice dove sta in memoria. Lo leggi con <code>id()</code>;</li>
+  <li>un <strong>valore</strong>: il dato vero e proprio.</li>
+</ul>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>a = 3
+print(type(a))
+print(type(3.0), type("ciao"), type(True), type(None))</code></pre></div>
+<div class="out"><pre>&lt;class 'int'&gt;
+&lt;class 'float'&gt; &lt;class 'str'&gt; &lt;class 'bool'&gt; &lt;class 'NoneType'&gt;</pre></div></div>
+
+<h3>Una variabile è un'etichetta, non una scatola</h3>
+<p>Di solito si immagina una variabile come una scatola che contiene un valore. In Python non è così: una variabile è un'<strong>etichetta attaccata a un oggetto</strong>. Si dice che è un <dfn>riferimento</dfn> all'oggetto.</p>
+<div class="snippet"><div class="code"><pre><code>x = 5.6          x ──────►  [ 5.6 ]
+
+y = x            x ──────►  [ 5.6 ]
+                 y ──────┘            un solo oggetto, due etichette</code></pre></div></div>
+<p><code>y = x</code> <strong>non copia</strong> il numero. Attacca una seconda etichetta allo stesso oggetto. Lo puoi verificare con <code>id()</code>:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = 5.6
+y = x
+print(id(x) == id(y))</code></pre></div>
+<div class="out"><pre>True     <span class="c">← stesso identificativo: è lo stesso oggetto</span></pre></div></div>
+<p>Cosa succede se poi scrivi <code>y = 3000</code>?</p>
+<div class="snippet"><div class="code"><pre><code>y = 3000         x ──────►  [ 5.6 ]
+                 y ──────►  [ 3000 ]   y ora punta a un oggetto NUOVO</code></pre></div></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>y = 3000
+print(id(x) == id(y), x)</code></pre></div>
+<div class="out"><pre>False 5.6     <span class="c">← x non è stato toccato</span></pre></div></div>
+<p>Il numero 5.6 non è cambiato. L'etichetta <code>y</code> è stata staccata e attaccata a un altro oggetto. Questo spostamento si chiama <dfn>rebinding</dfn>.</p>
+
+<h3>Mutabili e immutabili: si può modificare un oggetto?</h3>
+<p>Prova lo stesso esperimento prima con un numero e poi con una lista.</p>
+<p><strong>Con un numero:</strong></p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = 5.6
+y = x
+y = y + 1
+print(x, y)</code></pre></div>
+<div class="out"><pre>5.6 6.6</pre></div></div>
+<p><code>y + 1</code> non ha modificato il 5.6. Ha creato un numero <strong>nuovo</strong>, 6.6, e ci ha spostato sopra <code>y</code>. Un float non si può modificare, mai: si dice che è <dfn>immutabile</dfn>.</p>
+<p><strong>Con una lista:</strong></p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>l1 = [1, 2, 3]
+l2 = l1          <span class="c"># due etichette, UNA lista</span>
+l2.append(4)     <span class="c"># aggiungo un elemento alla lista</span>
+print(l1)
+print(l1 is l2)  <span class="c"># is: sono lo stesso oggetto?</span></code></pre></div>
+<div class="out"><pre>[1, 2, 3, 4]     <span class="c">← anche l1 è cambiata!</span>
+True</pre></div></div>
+<div class="snippet"><div class="code"><pre><code>l1 ──────►  [ 1, 2, 3, 4 ]
+l2 ──────┘         append ha modificato QUESTA lista, che è una sola</code></pre></div></div>
+<p>Una lista invece si può modificare: è <dfn>mutabile</dfn>. E siccome <code>l1</code> e <code>l2</code> sono due etichette sulla stessa lista, entrambe vedono la modifica.</p>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Tipi</th><th>Si può modificare?</th></tr></thead>
+<tbody>
+<tr><td>Tipi base</td><td><code>int</code>, <code>float</code>, <code>bool</code>, <code>str</code>, <code>None</code></td><td>No: ogni "modifica" crea un oggetto nuovo</td></tr>
+<tr><td>Contenitore immutabile</td><td><code>tuple</code></td><td>No</td></tr>
+<tr><td>Contenitori mutabili</td><td><code>list</code>, <code>set</code>, <code>dict</code></td><td>Sì: tutte le etichette vedono la modifica</td></tr>
+</tbody></table></div>
+<p>Un'ultima cosa: il tipo appartiene all'<strong>oggetto</strong>, non alla variabile. La stessa variabile può essere prima un numero e poi un testo (<code>v = 1</code>, poi <code>v = "hello"</code>). Si dice che Python è <dfn>tipizzato dinamicamente</dfn>.</p>
+
+<h3>Prova tu</h3>
+<details class="predict"><summary><code>a = [1, 2]; b = a; b.append(3)</code>: quanto vale <code>a</code>?</summary><div class="answer"><pre>[1, 2, 3]</pre><p><code>a</code> e <code>b</code> sono due etichette sulla stessa lista.</p></div></details>
+<details class="predict"><summary><code>a = 10; b = a; b = b + 5</code>: quanto vale <code>a</code>?</summary><div class="answer"><pre>10</pre><p>Un numero è immutabile: <code>b + 5</code> crea un numero nuovo e ci sposta <code>b</code>. <code>a</code> resta sul 10.</p></div></details>
+</section>
+
+<!-- P3 -->
+<section class="chap pysec" id="p3">
+<h2><span class="num">P3</span>Tipi base e stringhe</h2>
+
+<h3>Numeri interi e con la virgola</h3>
+<p>Ci sono due tipi di numeri:</p>
+<ul>
+  <li><code>int</code>: numeri interi, come <code>5</code> o <code>-12</code>. Non hanno limiti di grandezza: <code>2 ** 200</code> è un numero esatto di 61 cifre.</li>
+  <li><code>float</code>: numeri con la virgola, come <code>5.6</code>. In Python la virgola si scrive con il <strong>punto</strong>. Hanno una precisione limitata (circa 16 cifre).</li>
+</ul>
+<p>Le operazioni, con 9 e 5 come esempio:</p>
+<div class="snippet"><div class="code"><pre><code>9 + 5   =  14
+9 - 5   =   4
+9 * 5   =  45
+9 / 5   =   1.8     divisione normale: dà SEMPRE un float
+9 // 5  =   1       divisione intera: quante volte il 5 sta nel 9
+9 % 5   =   4       resto: 9 = 5·1 + 4
+9 ** 2  =  81       potenza: 9 al quadrato</code></pre></div></div>
+<div class="trap"><p><b>Trappola.</b> <code>/</code> dà sempre un float, anche quando il risultato è intero: <code>7 / 7</code> vale <code>1.0</code>, non <code>1</code>.</p></div>
+
+<h3>Vero e falso: bool</h3>
+<p>Un <code>bool</code> può valere solo <code>True</code> o <code>False</code>, con la maiuscola. Si ottiene per esempio da un confronto: <code>35 &gt; 30</code> vale <code>True</code>. Si combinano con <code>and</code> (entrambi veri), <code>or</code> (almeno uno vero) e <code>not</code> (il contrario).</p>
+
+<h3>Convertire da un tipo all'altro</h3>
+<p>Ogni tipo ha una funzione con lo stesso nome che converte verso quel tipo:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>print(int(9.8))       <span class="c"># float → int</span>
+print(float(4))       <span class="c"># int → float</span>
+print(str(9.8))       <span class="c"># numero → testo</span>
+print(float("6.7"))   <span class="c"># testo → numero</span></code></pre></div>
+<div class="out"><pre>9       <span class="c">← tronca, NON arrotonda</span>
+4.0
+9.8
+6.7</pre></div></div>
+<p>Anche <code>bool()</code> converte, ma con una regola particolare: valgono <code>False</code> solo le cose "vuote" o nulle, cioè <code>0</code>, <code>0.0</code>, <code>None</code>, <code>""</code>, <code>[]</code>, <code>{}</code>, <code>()</code> e <code>set()</code>. Tutto il resto vale <code>True</code>.</p>
+<details class="predict"><summary>Quanto vale <code>bool("False")</code>?</summary>
+<div class="answer"><pre>True</pre><p><code>bool()</code> non legge il testo. Guarda solo se la stringa è vuota: <code>"False"</code> ha 5 caratteri, quindi vale True.</p></div></details>
+
+<h3>Stringhe: il testo</h3>
+<p>Una stringa (<code>str</code>) è un testo tra virgolette. Singole e doppie sono equivalenti: scegli quelle che ti permettono di scrivere le altre dentro, per esempio <code>"Python's nice"</code> oppure <code>'He said "yes"'</code>.</p>
+
+<h3>Indici: prendere un carattere</h3>
+<p>Ogni carattere ha una posizione, detta <dfn>indice</dfn>. Gli indici <strong>partono da 0</strong>. Esistono anche gli indici negativi, che contano dalla fine: <code>-1</code> è l'ultimo carattere.</p>
+<div class="fig"><div class="row">
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(5, 34px)"><span>H</span><span>e</span><span>l</span><span>l</span><span>o</span></div>
+  <div class="mx" style="grid-template-columns: repeat(5, 34px); font-size: 12px"><span class="ghost">0</span><span class="ghost">1</span><span class="ghost">2</span><span class="ghost">3</span><span class="ghost">4</span></div>
+  <div class="mx" style="grid-template-columns: repeat(5, 34px); font-size: 12px"><span class="ghost">-5</span><span class="ghost">-4</span><span class="ghost">-3</span><span class="ghost">-2</span><span class="ghost">-1</span></div>
+  <div class="lbl">s = "Hello"<br>s[0] = "H" · s[4] = "o" · s[-1] = "o"</div></div>
+</div></div>
+
+<h3>Slicing: prendere un pezzo</h3>
+<p>Per prendere un pezzo di stringa si scrive <code>s[start:stop]</code>. La regola da ricordare è una sola: <strong>start è incluso, stop è escluso</strong>.</p>
+<div class="fig"><div class="row">
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(5, 34px)"><span class="h">H</span><span class="h">e</span><span class="h">l</span><span>l</span><span>o</span></div><div class="mx" style="grid-template-columns: repeat(5, 34px); font-size: 12px"><span class="ghost">0</span><span class="ghost">1</span><span class="ghost">2</span><span class="ghost">3</span><span class="ghost">4</span></div><div class="lbl">s[0:3] = "Hel"<br>posizioni 0, 1, 2 · la 3 è esclusa</div></div>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(5, 34px)"><span>H</span><span class="h2">e</span><span class="h2">l</span><span class="h2">l</span><span class="h2">o</span></div><div class="mx" style="grid-template-columns: repeat(5, 34px); font-size: 12px"><span class="ghost">0</span><span class="ghost">1</span><span class="ghost">2</span><span class="ghost">3</span><span class="ghost">4</span></div><div class="lbl">s[1:] = "ello"<br>dalla 1 fino alla fine</div></div>
+</div></div>
+<ul>
+  <li>Se ometti <code>start</code> parti dall'inizio: <code>s[:3]</code> = <code>"Hel"</code>.</li>
+  <li>Se ometti <code>stop</code> arrivi alla fine: <code>s[1:]</code> = <code>"ello"</code>.</li>
+  <li>Se ometti entrambi prendi tutto: <code>s[:]</code> = <code>"Hello"</code>.</li>
+  <li>Un trucco utile: il numero di caratteri presi è <code>stop − start</code>. In <code>s[0:3]</code> sono 3.</li>
+</ul>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>f = "MyFile.txt"
+print(f[:-1])     <span class="c"># tutto tranne l'ultimo carattere</span>
+print(f[-3:])     <span class="c"># gli ultimi 3 caratteri: l'estensione</span></code></pre></div>
+<div class="out"><pre>MyFile.tx
+txt</pre></div></div>
+<div class="back"><p><b>Ti servirà in NumPy.</b> Lo slicing degli array funziona <strong>esattamente</strong> così: start incluso, stop escluso, indici negativi. L'unica differenza è che negli array ne scrivi uno per ogni dimensione.</p></div>
+
+<h3>Le stringhe non si possono modificare</h3>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>s = "example"
+s[0] = "E"</code></pre></div>
+<div class="out"><pre>TypeError: 'str' object does not support item assignment</pre></div></div>
+<p>Le stringhe sono immutabili (<a href="#p2">P2</a>). Per "cambiare" la prima lettera costruisci una stringa nuova con i pezzi: <code>s = "E" + s[1:]</code> dà <code>"Example"</code>.</p>
+
+<h3>Unire testo e numeri</h3>
+<p>Con <code>+</code> unisci due stringhe. Ma solo stringhe: un numero va prima convertito con <code>str()</code>.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>val = 0.75
+print("Value: " + str(val))   <span class="c"># funziona</span>
+print("Value: " + val)        <span class="c"># errore</span></code></pre></div>
+<div class="out"><pre>Value: 0.75
+TypeError: can only concatenate str (not "float") to str</pre></div></div>
+<p>C'è un modo più comodo, le <dfn>f-string</dfn>: metti una <code>f</code> prima delle virgolette e scrivi le variabili tra graffe. La conversione la fanno loro. Dopo i due punti puoi indicare un formato: <code>:.2f</code> vuol dire "due cifre dopo la virgola".</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>var1, var2 = 17.5, 5
+print(f"My float is {var1} and my int is {var2}")
+print(f"{2/3:.2f}")</code></pre></div>
+<div class="out"><pre>My float is 17.5 and my int is 5
+0.67</pre></div></div>
+
+<h3>None: "qui non c'è niente"</h3>
+<p><code>None</code> è un valore speciale che significa "nessun valore". Si usa per un dato mancante, o per una variabile che riempirai più avanti. Si controlla con <code>is</code>: <code>if x is None:</code>.</p>
+
+<h3>Prova tu</h3>
+<details class="predict"><summary><code>17 // 5</code> e <code>17 % 5</code></summary><div class="answer"><pre>3  e  2</pre><p>Il 5 sta 3 volte nel 17 (fa 15), e avanza 2.</p></div></details>
+<details class="predict"><summary><code>"Machine"[1:4]</code></summary><div class="answer"><pre>'ach'</pre><p>Posizioni 1, 2, 3. La 4 è esclusa. I caratteri presi sono 4 − 1 = 3.</p></div></details>
+<details class="predict"><summary><code>int(3.99)</code></summary><div class="answer"><pre>3</pre><p><code>int</code> tronca, non arrotonda.</p></div></details>
+</section>
+
+<!-- P4 -->
+<section class="chap pysec" id="p4">
+<h2><span class="num">P4</span>Tuple e liste</h2>
+<p>Finora ogni variabile conteneva un solo dato. Tuple e liste ne contengono tanti, in fila.</p>
+
+<h3>Tupla: una fila che non si può modificare</h3>
+<p>Una <dfn>tupla</dfn> è una sequenza di valori, anche di tipi diversi, che una volta creata non si può più modificare.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>t1 = ("Turin", "Italy")
+t2 = "Paris", "France"       <span class="c"># le parentesi sono facoltative</span>
+t3 = ("Rome", 2, 25.6)       <span class="c"># tipi diversi: va bene</span></code></pre></div></div>
+<p>A creare la tupla è la <strong>virgola</strong>, non le parentesi. Si vede bene con un elemento solo:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>t4 = ("London",)    <span class="c"># con la virgola</span>
+t5 = ("London")     <span class="c"># senza virgola</span>
+print(type(t4), type(t5))</code></pre></div>
+<div class="out"><pre>&lt;class 'tuple'&gt; &lt;class 'str'&gt;     <span class="c">← t5 è solo una stringa tra parentesi</span></pre></div></div>
+<div class="back"><p><b>Ti servirà in NumPy.</b> La forma di un array (la "shape") è una tupla. Per questo un vettore di 3 numeri ha shape <code>(3,)</code>, con la virgola.</p></div>
+
+<h3>Unpacking: spacchettare in più variabili</h3>
+<p>Puoi assegnare gli elementi di una tupla a più variabili in un colpo solo. Il primo va nella prima variabile, il secondo nella seconda, e così via:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>city, country, temperature = ("Turin", "Italy", 12)
+print(city)
+print(temperature)</code></pre></div>
+<div class="out"><pre>Turin
+12</pre></div></div>
+<p>Un uso comodo è scambiare due variabili senza una variabile di appoggio:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>a, b = 1, 2
+a, b = b, a      <span class="c"># a destra si crea la tupla (2, 1), poi si spacchetta</span>
+print(a, b)</code></pre></div>
+<div class="out"><pre>2 1</pre></div></div>
+<p>Alle tuple si accede con indici e slicing come alle stringhe (<a href="#p3">P3</a>): <code>t[0]</code>, <code>t[1:]</code>. Assegnare un elemento però dà errore, perché sono immutabili: <code>t[0] = 2</code> → <code>TypeError</code>.</p>
+
+<h3>Lista: una fila che si può modificare</h3>
+<p>Una <dfn>lista</dfn> è come una tupla, ma <strong>mutabile</strong>: puoi aggiungere, togliere e cambiare elementi. Si scrive con le parentesi quadre.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>l1 = [2, 4, 6]
+l1.append(8)           <span class="c"># aggiunge in fondo: modifica l1</span>
+print(l1)
+l3 = l1 + [10, 12]     <span class="c"># + crea una lista NUOVA, l1 non cambia</span>
+print(l3)
+l1[0] = "a"            <span class="c"># cambio il primo elemento</span>
+print(l1)</code></pre></div>
+<div class="out"><pre>[2, 4, 6, 8]
+[2, 4, 6, 8, 10, 12]
+['a', 4, 6, 8]</pre></div></div>
+
+<h3>Il passo: saltare elementi</h3>
+<p>Nello slicing puoi aggiungere un terzo numero, il <dfn>passo</dfn>: <code>l[start:stop:step]</code>. Il passo dice ogni quanti elementi prenderne uno.</p>
+<div class="snippet"><div class="code"><pre><code>l = [0, 1, 2, 3, 4]
+
+l[::2]    passo 2: uno sì e uno no        →  [0, 2, 4]
+l[::-1]   passo -1: tutto al contrario    →  [4, 3, 2, 1, 0]
+l[::-2]   al contrario, uno sì uno no     →  [4, 2, 0]</code></pre></div></div>
+<p>Funziona anche sulle stringhe: <code>"Hello"[::-1]</code> dà <code>"olleH"</code>.</p>
+
+<h3>Cercare, scorrere, riassumere</h3>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>l = [0, 1, 2]
+print(2 in l, 5 in l)      <span class="c"># c'è o non c'è?</span>
+for el in l:               <span class="c"># un elemento per giro</span>
+    print(el)
+print(min(l), max(l), sum(l))</code></pre></div>
+<div class="out"><pre>True False
+0
+1
+2
+0 2 3</pre></div></div>
+
+<h3>Ordinare: sorted() oppure .sort()</h3>
+<p>Ci sono due modi, e la differenza è importante:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>l1 = [3, 2, 5, 7]
+l2 = sorted(l1)      <span class="c"># crea una lista NUOVA ordinata</span>
+print(l1, l2)
+r = l1.sort()        <span class="c"># ordina l1 stessa</span>
+print(l1, r)</code></pre></div>
+<div class="out"><pre>[3, 2, 5, 7] [2, 3, 5, 7]    <span class="c">← l1 non è cambiata</span>
+[2, 3, 5, 7] None            <span class="c">← ora sì, e sort() restituisce None</span></pre></div></div>
+<div class="trap"><p><b>Trappola.</b> <code>l2 = l1.sort()</code> mette <code>None</code> in <code>l2</code>. NumPy ha la stessa identica coppia (<a href="#n3">N3</a>).</p></div>
+
+<h3>Prova tu</h3>
+<details class="predict"><summary><code>[5, 6, 7, 8, 9][1:4]</code></summary><div class="answer"><pre>[6, 7, 8]</pre></div></details>
+<details class="predict"><summary><code>[5, 6, 7, 8, 9][::2]</code></summary><div class="answer"><pre>[5, 7, 9]</pre></div></details>
+<details class="predict"><summary><code>type((1,))</code> e <code>type((1))</code></summary><div class="answer"><pre>tuple  e  int</pre></div></details>
+</section>
+
+<!-- P5 -->
+<section class="chap pysec" id="p5">
+<h2><span class="num">P5</span>Set e dizionari</h2>
+
+<h3>Set: elementi unici, senza ordine</h3>
+<p>Un <dfn>set</dfn> è un insieme, come in matematica: ogni elemento compare una volta sola e non c'è un ordine.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>s = {3, 3, "b", "b"}
+print(s)                     <span class="c"># i doppioni spariscono</span>
+print({1, 2, 3} == {3, 2, 1})   <span class="c"># l'ordine non conta</span>
+s.add("4")                   <span class="c"># aggiunge</span>
+s.remove(3)                  <span class="c"># toglie</span></code></pre></div>
+<div class="out"><pre>{3, 'b'}      <span class="c">← l'ordine di stampa può variare</span>
+True</pre></div></div>
+<p>Un uso tipico è togliere i doppioni da una lista: <code>list(set([1, 5, 5, 4]))</code>. Attenzione però: l'ordine originale può andare perso.</p>
+<div class="trap"><p><b>Trappola.</b> <code>{}</code> crea un dizionario vuoto, <strong>non</strong> un set vuoto. Il set vuoto si scrive <code>set()</code>.</p></div>
+
+<h3>Dizionario: cercare per nome</h3>
+<p>Una lista si consulta per posizione: "dammi l'elemento numero 2". Un <dfn>dizionario</dfn> si consulta per nome: "dammi il valore associato a 'Car'". Ogni elemento è una coppia <strong>chiave → valore</strong>.</p>
+<div class="snippet"><div class="code"><pre><code>occur = {"Car": 33, "Truck": 55}
+
+  chiave     valore
+  "Car"   →   33
+  "Truck" →   55</code></pre></div></div>
+<ul>
+  <li>Le chiavi sono <strong>uniche</strong>.</li>
+  <li>Le chiavi devono essere di un tipo immutabile (numeri, stringhe, tuple). Una lista non può fare da chiave: <code>TypeError: unhashable type: 'list'</code>.</li>
+  <li>I valori possono essere qualunque cosa, anche liste o altri dizionari.</li>
+</ul>
+
+<h3>Leggere</h3>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>images = {10: "plane.png", 25: "flower.png"}
+print(images[10])                     <span class="c"># la chiave esiste</span>
+print(images.get(0))                  <span class="c"># get: se non esiste dà None</span>
+print(images.get(0, "notfound.png"))  <span class="c"># ... o il valore che scegli tu</span>
+print(images[0])                      <span class="c"># con [] invece dà errore</span></code></pre></div>
+<div class="out"><pre>plane.png
+None
+notfound.png
+KeyError: 0</pre></div></div>
+
+<h3>Aggiungere, modificare, cancellare</h3>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>occur = {"Car": 33, "Truck": 55}
+occur["Car"] = 56       <span class="c"># la chiave esiste: aggiorna</span>
+occur["Road"] = 3       <span class="c"># la chiave non esiste: aggiunge</span>
+del occur["Truck"]      <span class="c"># cancella</span>
+print(occur)
+print("Car" in occur, 56 in occur)</code></pre></div>
+<div class="out"><pre>{'Car': 56, 'Road': 3}
+True False     <span class="c">← in cerca tra le CHIAVI, non tra i valori</span></pre></div></div>
+
+<h3>Scorrere</h3>
+<p><code>.items()</code> dà le coppie (chiave, valore), che puoi spacchettare nel ciclo (<a href="#p4">P4</a>):</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>basket = {"Cola": 0.99, "Apples": 1.5}
+for k, v in basket.items():
+    print(k, v)</code></pre></div>
+<div class="out"><pre>Cola 0.99
+Apples 1.5</pre></div></div>
+<p>Da Python 3.7 i dizionari mantengono l'ordine in cui hai inserito le chiavi.</p>
+<p><code>d.keys()</code> e <code>d.values()</code> restituiscono delle <dfn>view</dfn>: non sono copie, ma finestre sul dizionario. Se il dizionario cambia, la view vede il cambiamento. Il concetto di view torna in NumPy (<a href="#n5">N5</a>).</p>
+
+<h3>Quale contenitore scegliere</h3>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>tuple</th><th>list</th><th>set</th><th>dict</th></tr></thead>
+<tbody>
+<tr><td>Si può modificare</td><td>No</td><td>Sì</td><td>Sì</td><td>Sì</td></tr>
+<tr><td>Ha un ordine</td><td>Sì</td><td>Sì</td><td>No</td><td>Sì (di inserimento)</td></tr>
+<tr><td>Doppioni ammessi</td><td>Sì</td><td>Sì</td><td>No</td><td>No (chiavi)</td></tr>
+<tr><td>Cercare con <code>in</code></td><td>lento</td><td>lento</td><td>veloce</td><td>veloce</td></tr>
+</tbody></table></div>
+<p>"Lento" significa che Python controlla gli elementi uno per uno, quindi il tempo cresce con la lunghezza. Il prof lo scrive O(n). "Veloce" significa che il tempo non dipende dalla dimensione: O(1).</p>
+
+<h3>Prova tu</h3>
+<details class="predict"><summary><code>len({1, 1, 2, 2, 3})</code></summary><div class="answer"><pre>3</pre><p>I doppioni spariscono: restano 1, 2, 3.</p></div></details>
+<details class="predict"><summary><code>d = {"a": 1}; d["a"] = 5; d["b"] = 2</code>: quanto vale <code>d</code>?</summary><div class="answer"><pre>{'a': 5, 'b': 2}</pre></div></details>
+</section>
+
+<!-- P6 -->
+<section class="chap pysec" id="p6">
+<h2><span class="num">P6</span>Copia superficiale e profonda</h2>
+<p>Da <a href="#p2">P2</a> sai che <code>b = a</code> non copia niente. Per copiare davvero serve <code>.copy()</code>. Ma se il contenitore contiene <strong>altri contenitori</strong>, per esempio un dizionario di liste, le cose si complicano.</p>
+<div class="snippet"><div class="code"><pre><code>t = {"Turin": [10, 12, 10], "Milan": [15, 16, 16]}
+
+   dizionario esterno          liste interne
+   "Turin" ──────────────►  [10, 12, 10]
+   "Milan" ──────────────►  [15, 16, 16]</code></pre></div></div>
+
+<h3>Copia superficiale: .copy()</h3>
+<p>Copia solo il dizionario esterno. Le liste interne restano <strong>condivise</strong>:</p>
+<div class="snippet"><div class="code"><pre><code>t2 = t.copy()
+
+   t  : "Turin" ──┐
+   t2 : "Turin" ──┴──►  [10, 12, 10]      stessa lista per tutti e due</code></pre></div></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>t = {"Turin": [10, 12, 10], "Milan": [15, 16, 16]}
+t2 = t.copy()
+t2["Turin"].append(13)     <span class="c"># modifico una lista INTERNA</span>
+t2["Rome"] = [10, 11]      <span class="c"># modifico il dizionario ESTERNO</span>
+print(t)</code></pre></div>
+<div class="out"><pre>{'Turin': [10, 12, 10, 13], 'Milan': [15, 16, 16]}</pre></div></div>
+<p>Il 13 compare anche in <code>t</code>, perché la lista di Turin è condivisa. "Rome" invece no, perché il dizionario esterno è stato copiato davvero.</p>
+
+<h3>Copia profonda: copy.deepcopy()</h3>
+<p>Copia tutto, a ogni livello. Le due copie diventano completamente indipendenti.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>import copy
+t = {"Turin": [10, 12, 10], "Milan": [15, 16, 16]}
+t2 = copy.deepcopy(t)
+t2["Turin"].append(13)
+print(t)</code></pre></div>
+<div class="out"><pre>{'Turin': [10, 12, 10], 'Milan': [15, 16, 16]}     <span class="c">← t non è cambiato</span></pre></div></div>
+</section>
+
+<!-- P7 -->
+<section class="chap pysec" id="p7">
+<h2><span class="num">P7</span>Controllo del flusso: if, for, while</h2>
+
+<h3>if / elif / else: scegliere cosa fare</h3>
+<p>Python controlla le condizioni dall'alto in basso ed esegue <strong>solo il primo blocco</strong> la cui condizione è vera.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>temperature = 15.5
+if temperature == 10:                 <span class="c"># falso → salta</span>
+    message = "Esattamente 10"
+elif 10 &lt; temperature &lt; 20:           <span class="c"># vero → esegue questo</span>
+    message = "Tra 10 e 20"
+else:                                 <span class="c"># non ci arriva</span>
+    message = "Fuori range"
+print(message)</code></pre></div>
+<div class="out"><pre>Tra 10 e 20</pre></div></div>
+<ul>
+  <li>I confronti sono <code>==</code> (uguale, con due uguali), <code>!=</code> (diverso), <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code> e <code>&gt;=</code>.</li>
+  <li>Si possono concatenare come in matematica: <code>10 &lt; t &lt; 20</code>.</li>
+  <li>Dopo la condizione ci vogliono i <strong>due punti</strong>, e il blocco va <strong>indentato</strong> di 4 spazi.</li>
+</ul>
+<div class="trap"><p><b>Trappola.</b> L'indentazione non è una questione di stile: è l'unico modo in cui Python capisce quali righe appartengono all'<code>if</code>. Sbagliarla dà <code>IndentationError</code>. E non mescolare tab e spazi nello stesso file.</p></div>
+
+<h3>for: ripetere per ogni elemento</h3>
+<p>Il <code>for</code> di Python ti dà direttamente gli <strong>elementi</strong>, non le posizioni. Per ripetere un numero fisso di volte si usa <code>range(start, stop)</code>, dove stop è escluso come nelle slice:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>for i in range(5, 8):
+    print(i)</code></pre></div>
+<div class="out"><pre>5
+6
+7      <span class="c">← l'8 è escluso</span></pre></div></div>
+<p>Se ti servono sia la posizione sia l'elemento, usa <code>enumerate</code>. Per scorrere due liste insieme, <code>zip</code>:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>for i, el in enumerate(["a", "b", "c"]):
+    print(i, el)
+for x, y in zip(["a", "b", "c"], ["A", "B", "C"]):
+    print(x, y)</code></pre></div>
+<div class="out"><pre>0 a
+1 b
+2 c
+a A
+b B
+c C</pre></div></div>
+
+<h3>while: ripetere finché una condizione è vera</h3>
+<p>La condizione viene controllata <strong>prima</strong> di ogni giro. Quando diventa falsa, il ciclo si ferma.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>counter = 0
+while counter &lt; 5:
+    counter += 2       <span class="c"># abbreviazione di counter = counter + 2</span>
+print(counter)</code></pre></div></div>
+<div class="snippet"><div class="code"><pre><code>giro 1: 0 &lt; 5 vero  → counter = 2
+giro 2: 2 &lt; 5 vero  → counter = 4
+giro 3: 4 &lt; 5 vero  → counter = 6
+        6 &lt; 5 falso → stop        risultato: 6</code></pre></div></div>
+
+<h3>break e continue</h3>
+<p><code>continue</code> salta il resto del giro e passa al successivo. <code>break</code> esce dal ciclo del tutto.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>seen = []
+for v in ["car", "skip", "end", "van"]:
+    if v == "skip":
+        continue
+    elif v == "end":
+        break
+    seen.append(v)
+print(seen)</code></pre></div></div>
+<details class="predict"><summary>Quanto vale <code>seen</code>?</summary><div class="answer"><pre>['car']</pre><p>"car" viene aggiunto. "skip" viene saltato. "end" fa uscire dal ciclo, quindi "van" non viene mai letto.</p></div></details>
+<div class="trap"><p><b>Trappola.</b> Le righe lette da un file finiscono con un a capo, <code>\n</code>. Quindi <code>"skip\n" == "skip"</code> è falso. Si toglie con <code>line.strip()</code>.</p></div>
+</section>
+
+<!-- P8 -->
+<section class="chap pysec" id="p8">
+<h2><span class="num">P8</span>Funzioni</h2>
+<p>Se devi fare lo stesso calcolo in tanti punti, invece di riscriverlo gli dai un nome: quella è una <dfn>funzione</dfn>. Riceve dei valori in ingresso, i <dfn>parametri</dfn>, e restituisce un risultato con <code>return</code>.</p>
+<div class="snippet"><div class="code"><pre><code>def nome_funzione(parametro1, parametro2):    ← definizione
+    ... calcoli ...
+    return risultato                          ← cosa restituisce
+
+x = nome_funzione(3, 4)                       ← chiamata</code></pre></div></div>
+
+<h3>Un esempio: la distanza fra due punti</h3>
+<p>La distanza euclidea fra due punti è la radice della somma dei quadrati delle differenze. Fra (1, 2, 3) e (2, 4, 5):</p>
+<div class="snippet"><div class="code"><pre><code>differenze:   1-2 = -1    2-4 = -2    3-5 = -2
+quadrati:        1           4           4
+somma:        1 + 4 + 4 = 9
+radice:       √9 = 3</code></pre></div></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>import math
+
+def euclidean_distance(x, y):
+    dist = 0
+    for x_el, y_el in zip(x, y):
+        dist += (x_el - y_el) ** 2
+    return math.sqrt(dist)
+
+print(euclidean_distance([1, 2, 3], [2, 4, 5]))</code></pre></div>
+<div class="out"><pre>3.0</pre></div></div>
+<div class="back"><p><b>Tienila a mente.</b> Con NumPy questa funzione diventa una riga sola, senza ciclo (<a href="#n3">N3</a>). È proprio il motivo per cui si usa NumPy.</p></div>
+
+<h3>Scope: dove "vive" una variabile</h3>
+<p>Una variabile creata <strong>dentro</strong> una funzione esiste solo lì dentro. Si chiama <dfn>locale</dfn>. Quando la funzione finisce, sparisce.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>def my_func(x, y):
+    w = 5              <span class="c"># w è locale</span>
+    return x + y + w
+
+print(my_func(2, 4))
+print(w)               <span class="c"># fuori dalla funzione</span></code></pre></div>
+<div class="out"><pre>11
+NameError: name 'w' is not defined</pre></div></div>
+<p>Una variabile creata <strong>fuori</strong> (<dfn>globale</dfn>) si può leggere dentro la funzione. Ma se dentro la funzione la <strong>assegni</strong>, crei una variabile locale nuova con lo stesso nome, e quella fuori non cambia:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>z = 5
+def my_func(x, y):
+    z = 2              <span class="c"># z locale, diversa da quella fuori</span>
+    return x + y + z
+print(my_func(2, 4))
+print(z)</code></pre></div>
+<div class="out"><pre>8       <span class="c">← 2 + 4 + 2: usa la z locale</span>
+5       <span class="c">← la z di fuori non è cambiata</span></pre></div></div>
+
+<h3>Restituire più valori</h3>
+<p>Una funzione può restituire più valori separati da virgola, cioè una tupla, che poi spacchetti (<a href="#p4">P4</a>):</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>def add_sub(x, y):
+    return x + y, x - y
+summ, diff = add_sub(5, 3)
+print(summ, diff)</code></pre></div>
+<div class="out"><pre>8 2</pre></div></div>
+
+<h3>Parametri con un valore di default</h3>
+<p>Un parametro può avere un valore predefinito. In quel caso puoi ometterlo quando chiami la funzione. Puoi anche passarlo per nome, in qualunque ordine.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>def func(a, b, c="defC", d="defD"):
+    print(a, b, c, d)
+
+func(1, 2)            <span class="c"># c e d prendono il default</span>
+func(1, 2, "a")       <span class="c"># c = "a" per posizione</span>
+func(1, 2, d="b")     <span class="c"># d passato per nome</span></code></pre></div>
+<div class="out"><pre>1 2 defC defD
+1 2 a defD
+1 2 defC b</pre></div></div>
+<p>I parametri senza default invece sono obbligatori: <code>func(1, c="a")</code> dà errore perché manca <code>b</code>.</p>
+<div class="back"><p><b>Ti servirà in NumPy.</b> In <code>x.sum(axis=0)</code>, <code>axis</code> è proprio un parametro con default passato per nome. Se non lo scrivi vale <code>None</code> e la somma è su tutto l'array.</p></div>
+</section>
+
+<!-- P9 -->
+<section class="chap pysec" id="p9">
+<h2><span class="num">P9</span>Lambda e comprehension</h2>
+
+<h3>Lambda: una funzione in una riga</h3>
+<p>Una <dfn>lambda</dfn> è una funzione piccola, scritta in una riga e senza nome. Queste due scritture sono equivalenti:</p>
+<div class="snippet"><div class="code"><pre><code>def squared(x):              squared = lambda x: x**2
+    return x**2
+                             prima dei due punti: il parametro
+                             dopo i due punti: cosa restituisce</code></pre></div></div>
+<p>L'uso tipico è dire a <code>min</code>, <code>max</code> o <code>sorted</code> <strong>cosa confrontare</strong>. Hai una lista di dizionari e vuoi quello con <code>val</code> più piccolo. Python non sa confrontare due dizionari, quindi gli dici "confronta il campo val":</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>records = [{"name": "v1", "val": 5},
+           {"name": "v2", "val": 1},
+           {"name": "v3", "val": 6}]
+print(min(records, key=lambda r: r["val"]))</code></pre></div>
+<div class="out"><pre>{'name': 'v2', 'val': 1}</pre></div></div>
+
+<h3>List comprehension: costruire una lista in una riga</h3>
+<p>Spesso devi creare una lista trasformando un'altra lista. Con un ciclo ci vogliono tre righe:</p>
+<div class="snippet"><div class="code"><pre><code>quadrati = []
+for x in [1, 2, 3]:
+    quadrati.append(x**2)</code></pre></div></div>
+<p>Con una <dfn>list comprehension</dfn> è una riga sola:</p>
+<div class="snippet"><div class="code"><pre><code>quadrati = [x**2 for x in [1, 2, 3]]       →  [1, 4, 9]
+
+            ────  ────────────────
+            cosa   per ogni elemento
+            metto  di dove</code></pre></div></div>
+<p>Puoi anche filtrare, aggiungendo un <code>if</code> in fondo. Prima si filtra, poi si trasforma quello che rimane:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>print([x**2 for x in [-1, 4, -2, 6, 3] if x &gt; 0])</code></pre></div>
+<div class="out"><pre>[16, 36, 9]     <span class="c">← tengo 4, 6, 3 e li elevo al quadrato</span></pre></div></div>
+<p>Con le graffe si costruiscono allo stesso modo dizionari e set:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>print({k: v for k, v in zip(["a", "b", "c"], [-1, 4, -2])})
+print({v**2 for v in [4, 3, 2, -2, 1]})</code></pre></div>
+<div class="out"><pre>{'a': -1, 'b': 4, 'c': -2}
+{16, 9, 4, 1}     <span class="c">← 2 e -2 danno lo stesso 4, che il set tiene una volta</span></pre></div></div>
+<p>Se una comprehension diventa troppo lunga da leggere, meglio un ciclo normale con un commento.</p>
+</section>
+
+<!-- P10 -->
+<section class="chap pysec" id="p10">
+<h2><span class="num">P10</span>Classi, oggetti, metodi</h2>
+<p>Una <dfn>classe</dfn> è uno stampo per creare oggetti di un certo tipo. Un <dfn>oggetto</dfn> (o <dfn>istanza</dfn>) è un esemplare creato con quello stampo.</p>
+<div class="snippet"><div class="code"><pre><code>classe:   Triangle           "tutti i triangoli hanno 3 lati e un perimetro"
+oggetti:  Triangle(2, 4, 3)  un triangolo preciso
+          Triangle(2, 5, 2)  un altro triangolo preciso</code></pre></div></div>
+<p>Una classe contiene:</p>
+<ul>
+  <li><dfn>attributi</dfn>: variabili che appartengono all'oggetto, per esempio i lati <code>a</code>, <code>b</code>, <code>c</code>;</li>
+  <li><dfn>metodi</dfn>: funzioni che appartengono all'oggetto, per esempio "calcola il perimetro";</li>
+  <li>un <dfn>costruttore</dfn>, <code>__init__</code>: il metodo che viene chiamato quando crei l'oggetto e che ne riempie gli attributi.</li>
+</ul>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>class Triangle:
+    num_edges = 3                          <span class="c"># attributo di classe: uguale per tutti</span>
+
+    def __init__(self, a, b, c):           <span class="c"># costruttore</span>
+        self.a = a                         <span class="c"># attributi dell'oggetto</span>
+        self.b = b
+        self.c = c
+
+    def get_perimeter(self):               <span class="c"># metodo</span>
+        return self.a + self.b + self.c
+
+t1 = Triangle(2, 4, 3)       <span class="c"># crea l'oggetto: chiama __init__</span>
+print(t1.a)                  <span class="c"># attributo: SENZA parentesi</span>
+print(t1.num_edges)
+print(t1.get_perimeter())    <span class="c"># metodo: CON parentesi</span></code></pre></div>
+<div class="out"><pre>2
+3
+9</pre></div></div>
+
+<h3>Cos'è self</h3>
+<p><code>self</code> è il modo in cui il metodo si riferisce all'oggetto su cui sta lavorando. È sempre il primo parametro di un metodo, ma quando chiami il metodo non lo scrivi: lo passa Python da solo.</p>
+<div class="snippet"><div class="code"><pre><code>tu scrivi:          t1.get_perimeter()
+Python esegue:      get_perimeter(t1)       → dentro il metodo, self = t1</code></pre></div></div>
+
+<div class="back"><p><b>Ti servirà in NumPy.</b> Un array NumPy è un oggetto. <code>x.shape</code> e <code>x.dtype</code> sono <strong>attributi</strong>, quindi senza parentesi. <code>x.sum()</code> e <code>x.reshape(2, 3)</code> sono <strong>metodi</strong>, quindi con le parentesi. Per questo esistono due scritture equivalenti: <code>np.sum(x)</code> è una funzione della libreria, <code>x.sum()</code> è un metodo dell'oggetto.</p></div>
+
+<h3>Attributi privati</h3>
+<p>A volte un attributo serve all'oggetto ma non deve essere toccato da fuori. Se il nome inizia con due underscore, <code>self.__perimeter</code>, da fuori non è raggiungibile: <code>t1.__perimeter</code> dà <code>AttributeError</code>. In realtà Python lo rinomina di nascosto in <code>_Triangle__perimeter</code>, quindi è protetto dagli errori ma non bloccato del tutto. Con un solo underscore, <code>_perimeter</code>, è solo una convenzione che vuol dire "privato, non toccare".</p>
+</section>
+
+<!-- P11 -->
+<section class="chap pysec" id="p11">
+<h2><span class="num">P11</span>File ed errori</h2>
+
+<h3>Aprire un file</h3>
+<p>Per leggere o scrivere un file lo apri con <code>open(nome, modo)</code>. Il modo dice cosa vuoi fare:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Modo</th><th>Significato</th><th>Attenzione</th></tr></thead>
+<tbody>
+<tr><td><code>"r"</code></td><td>lettura</td><td>il file deve esistere</td></tr>
+<tr><td><code>"w"</code></td><td>scrittura</td><td><strong>cancella</strong> tutto quello che c'era</td></tr>
+<tr><td><code>"a"</code></td><td>aggiunta in fondo</td><td>non cancella</td></tr>
+</tbody></table></div>
+<p>Un file aperto va chiuso con <code>f.close()</code>, ed è facile dimenticarsene. Per questo si usa quasi sempre <code>with</code>, che chiude il file da solo alla fine del blocco, anche se nel mezzo c'è un errore:</p>
+<div class="snippet"><div class="code"><pre><code>f = open("file.txt", "r")          with open("file.txt", "r") as f:
+...                                    ...
+f.close()                          ← chiuso in automatico qui</code></pre></div></div>
+
+<h3>Scrivere e leggere</h3>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>with open("my_file.txt", "w") as f:
+    f.write("car\nskip\ntruck\n")    <span class="c"># \n = a capo. write non lo aggiunge da solo</span>
+
+with open("my_file.txt", "r") as f:
+    for line in f:                   <span class="c"># una riga per giro</span>
+        print(line.strip())          <span class="c"># strip toglie il \n finale</span></code></pre></div>
+<div class="out"><pre>car
+skip
+truck</pre></div></div>
+<p>Altri modi di leggere:</p>
+<ul>
+  <li><code>f.readline()</code> legge una riga;</li>
+  <li><code>f.readlines()</code> legge tutte le righe e le mette in una lista;</li>
+  <li><code>f.read(n)</code> legge <code>n</code> caratteri alla volta, utile per file troppo grandi da caricare interi. Quando restituisce una stringa vuota, il file è finito.</li>
+</ul>
+<p>Scorrere il file con <code>for line in f</code> è il modo migliore: legge una riga alla volta e non carica tutto il file in memoria.</p>
+
+<h3>Errori: try / except</h3>
+<p>Quando qualcosa va storto, Python si ferma e mostra un errore (si dice che "solleva un'eccezione"). Con <code>try</code>/<code>except</code> puoi intercettare l'errore e decidere tu cosa fare, senza bloccare il programma. Il prof lo usa di continuo nelle slide per mostrare gli errori, e ci sono gli esercizi 1.5.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>try:
+    x = int("ciao")              <span class="c"># prova a fare questo</span>
+except ValueError as e:          <span class="c"># se dà ValueError, fai questo</span>
+    print("Errore:", e)</code></pre></div>
+<div class="out"><pre>Errore: invalid literal for int() with base 10: 'ciao'</pre></div></div>
+<p>Gli errori che vedrai più spesso:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Errore</th><th>Quando succede</th><th>Esempio</th></tr></thead>
+<tbody>
+<tr><td><code>TypeError</code></td><td>tipo sbagliato</td><td><code>"a" + 1</code></td></tr>
+<tr><td><code>ValueError</code></td><td>tipo giusto, valore sbagliato</td><td><code>int("ciao")</code></td></tr>
+<tr><td><code>KeyError</code></td><td>chiave che non c'è</td><td><code>{"a": 1}["b"]</code></td></tr>
+<tr><td><code>IndexError</code></td><td>posizione che non c'è</td><td><code>[1, 2][5]</code></td></tr>
+<tr><td><code>NameError</code></td><td>variabile mai creata</td><td><code>print(w)</code></td></tr>
+</tbody></table></div>
+
+<div class="ex"><b>Esercizi del prof:</b> <code>exercises/01_python/</code>, notebook da 1.1 a 1.5, e poi il Lab 1: dataset Iris, statistiche calcolate a mano e un primo classificatore, tutto in Python puro.</div>
+</section>
+
+<!-- =================================================================== -->
+<div class="part np">
+  <p class="eyebrow">Parte 2</p>
+  <h2 class="parttitle">NumPy</h2>
+  <p>Lezione 2. Notebook degli esercizi: <code>exercises/02_numpy/</code>.</p>
+</div>
+
+
+<!-- N0 -->
+<section class="chap" id="n0">
+<h2><span class="num">N0</span>Prima di iniziare: parole e un po' di matematica</h2>
+<p>La lezione su NumPy usa parole e calcoli che dà per scontati. Qui li trovi spiegati tutti. Ogni volta che una parola nelle sezioni successive non ti torna, ripassa da qui.</p>
+
+<h3>Le forme dei dati</h3>
+<div class="fig"><div class="row">
+  <div class="mxw"><div class="mx"><span>5</span></div><div class="lbl">scalare<br>un numero</div></div>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span>1</span><span>2</span><span>3</span></div><div class="lbl">vettore<br>una fila di numeri</div></div>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div><div class="lbl">matrice 2×3<br>2 righe, 3 colonne</div></div>
+</div><p class="cap">Per le matrici si dicono <strong>sempre prima le righe e poi le colonne</strong>: "2×3" vuol dire 2 righe e 3 colonne.</p></div>
+<p>Si può andare oltre: una "pila" di matrici è un array a 3 dimensioni, e così via. In generale si parla di array a N dimensioni.</p>
+
+<h3>Righe, colonne, assi</h3>
+<p>In una matrice ogni numero ha due coordinate: la <strong>riga</strong> (quale fila orizzontale) e la <strong>colonna</strong> (quale fila verticale). Tutte e due partono da 0, come gli indici delle liste.</p>
+<div class="fig"><div class="row">
+  <div class="axes">
+    <span></span><span class="ax1">asse 1: colonne →</span>
+    <span class="ax0">asse 0: righe →</span>
+    <div class="mx" style="grid-template-columns: repeat(3, auto)"><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span class="h">7</span></div>
+  </div>
+  <div class="mxw"><div class="lbl" style="text-align:left">il 7 sta in riga 1, colonna 2<br><br>asse 0 = la direzione che scende<br>lungo le righe (dall'alto in basso)<br><br>asse 1 = la direzione che scorre<br>lungo le colonne (da sinistra a destra)</div></div>
+</div></div>
+<p>Un <dfn>asse</dfn> è semplicemente una delle direzioni dell'array. Un vettore ha un asse, una matrice due, un array 3-D tre.</p>
+
+<h3>La shape: la forma dell'array</h3>
+<p>La <dfn>shape</dfn> è una tupla (<a href="#p4">P4</a>) che dice quanti elementi ci sono lungo ogni asse.</p>
+<div class="snippet"><div class="code"><pre><code>vettore di 3 numeri          → shape (3,)
+matrice 2 righe × 3 colonne  → shape (2, 3)
+3 matrici 2×3 impilate       → shape (3, 2, 3)</code></pre></div></div>
+
+<h3>Due parole che ricorrono</h3>
+<dl class="glos">
+  <dt>Elemento per elemento</dt><dd>Un'operazione fatta separatamente su ogni numero, accoppiando i numeri nella stessa posizione.</dd>
+  <dt>Vettorizzato</dt><dd>Un calcolo scritto sull'array intero, senza ciclo <code>for</code>: il ciclo lo fa NumPy dietro le quinte, molto più velocemente.</dd>
+</dl>
+
+<h3>La matematica che serve</h3>
+<p><strong>Media</strong>: sommi tutto e dividi per quanti sono.</p>
+<div class="snippet"><div class="code"><pre><code>media di 1, 2, 3  =  (1 + 2 + 3) / 3  =  6 / 3  =  2</code></pre></div></div>
+<p><strong>Deviazione standard</strong>: misura quanto i numeri sono sparsi intorno alla media. Se sono tutti uguali vale 0, e più sono lontani dalla media più è grande. Si calcola così:</p>
+<div class="snippet"><div class="code"><pre><code>numeri:            1     1     2     2      media = 1.5
+scarto dalla media: -0.5  -0.5  +0.5  +0.5
+scarto al quadrato:  0.25  0.25  0.25  0.25
+media dei quadrati:  0.25
+radice:              √0.25 = 0.5            → deviazione standard = 0.5</code></pre></div></div>
+<p><strong>Prodotto scalare</strong> fra due vettori della stessa lunghezza: moltiplichi le coppie nella stessa posizione e sommi tutto.</p>
+<div class="snippet"><div class="code"><pre><code>[1, 2, 3] · [4, 5, 6]  =  1·4 + 2·5 + 3·6  =  4 + 10 + 18  =  32</code></pre></div></div>
+<p><strong>Prodotto fra matrici</strong>: ogni cella del risultato è il prodotto scalare fra una riga della prima matrice e una colonna della seconda. È spiegato passo per passo in <a href="#n3">N3</a>.</p>
+<p><strong>Esponenziale e sigmoide</strong>: <code>e^x</code> è il numero e ≈ 2.718 elevato a x. La <dfn>sigmoide</dfn> è la formula <code>1 / (1 + e^(-x))</code>, che trasforma qualunque numero in un valore fra 0 e 1: i numeri molto negativi diventano quasi 0, i numeri molto positivi quasi 1, e lo 0 diventa 0.5. Serve nell'esercizio 1 del notebook 2.2.</p>
+</section>
+
+<!-- N1 -->
+<section class="chap" id="n1">
+<h2><span class="num">N1</span>Perché NumPy</h2>
+
+<h3>Il problema: le liste sono lente per i calcoli</h3>
+<p>Con quello che sai dalla lezione 1, per fare un calcolo su tanti numeri usi una lista e un ciclo <code>for</code>. Funziona, ma quando i numeri diventano milioni (cosa normale nel machine learning) è lento e occupa tanta memoria. NumPy nasce per risolvere questo.</p>
+
+<h3>Installare e importare</h3>
+<p>NumPy è una libreria esterna: va installata nel tuo venv con <code>pip install numpy</code> (<a href="#p1">P1</a>). Su Colab c'è già. Tutti la importano con il nome abbreviato <code>np</code>. È solo una convenzione, ma la seguono tutti, quindi seguila anche tu:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>import numpy as np</code></pre></div></div>
+
+<h3>L'array: la "lista" di NumPy</h3>
+<p>L'oggetto principale di NumPy è l'<dfn>array</dfn>. Il modo più semplice di crearne uno è partire da una lista:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>arr = np.array([0.67, 0.45, 0.33])
+print(arr)
+print(arr.dtype)     <span class="c"># il tipo degli elementi</span>
+print(arr.shape)     <span class="c"># la forma</span></code></pre></div>
+<div class="out"><pre>[0.67 0.45 0.33]     <span class="c">← niente virgole: così riconosci un array da una lista</span>
+float64              <span class="c">← numeri con la virgola, 8 byte ciascuno</span>
+(3,)                 <span class="c">← un vettore di 3 elementi</span></pre></div></div>
+<p>Rispetto a una lista, un array ha tre differenze:</p>
+<ul>
+  <li><strong>Tutti gli elementi hanno lo stesso tipo</strong>, il <code>dtype</code>. Una lista può mescolare numeri e testo, un array no.</li>
+  <li><strong>Può avere più dimensioni</strong>: vettore, matrice o oltre.</li>
+  <li><strong>Si possono selezionare elementi in modi più potenti</strong>, per esempio "tutti quelli maggiori di 4" (<a href="#n5">N5</a>).</li>
+</ul>
+
+<h3>Da dove viene la velocità: la memoria</h3>
+<div class="back"><p><b>Dalla lezione 1</b> (<a href="#p2">P2</a>). Una lista non contiene i numeri: contiene <strong>riferimenti</strong>, cioè etichette che puntano a oggetti sparsi per la memoria. Ogni oggetto porta con sé il proprio tipo e altre informazioni.</p></div>
+<div class="fig">
+  <p style="margin:0 0 8px; font-size:14px"><strong>Lista</strong> <code>[0.67, 0.45, 0.33]</code>: tre riferimenti, ognuno punta a un oggetto float da qualche altra parte in memoria.</p>
+  <div class="mem"><span class="ref">rif →</span><span class="ref">rif →</span><span class="ref">rif →</span>&nbsp;&nbsp;<span>float 0.67 (24 B)</span><span>float 0.45 (24 B)</span><span>float 0.33 (24 B)</span></div>
+  <p style="margin:14px 0 8px; font-size:14px"><strong>Array</strong>: i tre numeri uno dopo l'altro, 8 byte ciascuno, nient'altro.</p>
+  <div class="mem"><span>0.67</span><span>0.45</span><span>0.33</span></div>
+</div>
+<div class="snippet"><div class="code"><pre><code>per ogni numero:
+  lista:  8 byte (riferimento) + 24 byte (oggetto float)  =  32 byte
+  array:  8 byte                                          =   8 byte
+                                              → circa 4 volte meno memoria</code></pre></div></div>
+<p>E la velocità? Con una lista, a ogni operazione Python deve seguire ogni riferimento e controllare il tipo di ogni oggetto. Con un array il tipo è uno solo per tutti, e i numeri sono vicini in memoria, quindi il processore li legge a blocchi. In più il ciclo non lo fa Python ma NumPy, in codice compilato.</p>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>Lista Python</th><th>Array NumPy</th></tr></thead>
+<tbody>
+<tr><td><strong>Memoria</strong></td><td>circa 32 byte per numero</td><td>8 byte per numero</td></tr>
+<tr><td><strong>Controllo del tipo</strong></td><td>su ogni elemento, ogni volta</td><td>una volta sola</td></tr>
+<tr><td><strong>Lettura</strong></td><td>salta da un riferimento all'altro</td><td>legge numeri vicini, a blocchi</td></tr>
+<tr><td><strong>Il ciclo lo fa</strong></td><td>Python (lento)</td><td>NumPy, in codice compilato (veloce)</td></tr>
+</tbody></table></div>
+
+<h3>Provalo tu</h3>
+<p>Prodotto scalare (<a href="#n0">N0</a>) di due vettori da un milione di numeri, prima con le liste e poi con NumPy:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>import time
+n = 1_000_000                          <span class="c"># un milione; gli _ servono solo a leggere meglio</span>
+a_list = [float(i) for i in range(n)]
+b_list = [float(i) for i in range(n)]
+a_arr = np.array(a_list)
+b_arr = np.array(b_list)
+
+t0 = time.perf_counter()
+dot_list = sum(x * y for x, y in zip(a_list, b_list))    <span class="c"># con le liste</span>
+t1 = time.perf_counter()
+dot_arr = np.dot(a_arr, b_arr)                           <span class="c"># con NumPy</span>
+t2 = time.perf_counter()
+
+print(f"lista: {t1-t0:.4f} s   numpy: {t2-t1:.4f} s")</code></pre></div>
+<div class="out"><pre>lista: 0.0355 s   numpy: 0.0007 s      <span class="c">← nel mio test circa 50 volte più veloce</span></pre></div></div>
+<p>I tuoi tempi saranno diversi, ma la differenza resta enorme.</p>
+<div class="trap"><p><b>Trappola.</b> Se confronti i due risultati con <code>dot_list == dot_arr</code> ottieni <code>False</code>, anche se il calcolo è lo stesso. Il motivo: i float hanno precisione limitata, e sommarli in un ordine diverso cambia le ultime cifre. Due float non si confrontano mai con <code>==</code>. Si usa <code>np.isclose(dot_list, dot_arr)</code>, che ammette una piccola differenza e qui dà <code>True</code>.</p></div>
+<p>Per questo NumPy è la base di tutte le librerie per i dati: scikit-learn, SciPy e pandas sono costruite sopra.</p>
+</section>
+
+<!-- N2 -->
+<section class="chap" id="n2">
+<h2><span class="num">N2</span>Array: forme, tipi, creazione</h2>
+
+<h3>Da liste annidate ad array</h3>
+<p>Un vettore si crea da una lista. Per una matrice si usa una <strong>lista di liste</strong>, dove ogni lista interna è una riga:</p>
+<div class="snippet"><div class="code"><pre><code>np.array([[1, 2, 3],        riga 0 →   1  2  3
+          [4, 5, 6]])       riga 1 →   4  5  6</code></pre></div></div>
+<p>Per un array a 3 dimensioni si usa una lista di matrici, cioè una lista di liste di liste.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>arr1 = np.array([1, 2, 3])
+arr2 = np.array([[1, 2, 3],
+                 [4, 5, 6]])
+arr3 = np.array([[[1, 2, 3], [4, 5, 6]],
+                 [[7, 8, 9], [10, 11, 12]],
+                 [[13, 14, 15], [16, 17, 18]]])
+print(arr1.shape)
+print(arr2.shape)
+print(arr3.shape)</code></pre></div>
+<div class="out"><pre>(3,)
+(2, 3)
+(3, 2, 3)</pre></div></div>
+
+<h3>Come leggere la shape contando le parentesi</h3>
+<p>Parti dalle parentesi più esterne e conta gli elementi livello per livello:</p>
+<div class="snippet"><div class="code"><pre><code>arr3 = [ [[1,2,3],[4,5,6]],  [[7,8,9],[10,11,12]],  [[13,14,15],[16,17,18]] ]
+
+livello 1 (parentesi esterne): 3 blocchi          → 3
+livello 2 (dentro un blocco):  2 righe            → 2
+livello 3 (dentro una riga):   3 numeri           → 3
+                                           shape = (3, 2, 3)</code></pre></div></div>
+<div class="rule"><p><b>Regola.</b> Ogni dimensione in più si aggiunge <strong>a sinistra</strong> della shape. Un vettore <code>(3,)</code>, impilato due volte, diventa <code>(2, 3)</code>. Tre matrici <code>(2, 3)</code> impilate diventano <code>(3, 2, 3)</code>. Quindi <strong>l'ultimo numero della shape è sempre la lunghezza di una riga</strong>.</p></div>
+<p>Gli assi si possono contare anche dalla fine, con numeri negativi, come gli indici delle liste. <code>axis=-1</code> è sempre l'ultimo asse, quello che scorre lungo una riga, qualunque sia il numero di dimensioni. Lo userai in <a href="#n3">N3</a>.</p>
+
+<h3>I tre attributi da conoscere</h3>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([[2, 3, 4],
+              [5, 6, 7]])
+print(x.ndim)     <span class="c"># quanti assi</span>
+print(x.shape)    <span class="c"># quanti elementi lungo ogni asse</span>
+print(x.size)     <span class="c"># quanti elementi in tutto</span></code></pre></div>
+<div class="out"><pre>2         <span class="c">← righe e colonne</span>
+(2, 3)    <span class="c">← 2 righe, 3 colonne</span>
+6         <span class="c">← 2 × 3</span></pre></div></div>
+<p>Sono attributi, quindi si scrivono senza parentesi (<a href="#p10">P10</a>). Esistono anche come funzioni: <code>np.ndim(x)</code>, <code>np.shape(x)</code>, <code>np.size(x)</code>.</p>
+
+<h3>Il tipo degli elementi: dtype</h3>
+<p>Tutti gli elementi di un array hanno lo stesso tipo, il <code>dtype</code>. NumPy ha i suoi tipi:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Famiglia</th><th>Tipi</th><th>Cosa vuol dire</th></tr></thead>
+<tbody>
+<tr><td>Interi</td><td><code>int8</code>, <code>int16</code>, <code>int32</code>, <code>int64</code></td><td>Il numero dice quanti <strong>bit</strong> occupa ogni elemento (8 bit = 1 byte). Più bit, numeri più grandi</td></tr>
+<tr><td>Con la virgola</td><td><code>float16</code>, <code>float32</code>, <code>float64</code></td><td><code>float64</code> è il default. <code>float32</code> usa metà memoria ma è meno preciso</td></tr>
+<tr><td>Vero/falso</td><td><code>bool</code></td><td>1 byte per elemento. Serve per le maschere (<a href="#n5">N5</a>)</td></tr>
+</tbody></table></div>
+<p>Se non lo specifichi, NumPy <strong>deduce</strong> il dtype dai valori che gli dai:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>print(np.array([0.0, 1.0, 2.0]).dtype)    <span class="c"># numeri con il punto</span>
+print(np.array([0, 1, 2]).dtype)          <span class="c"># numeri senza punto</span>
+print(np.array([1, 2.5]).dtype)           <span class="c"># misti</span></code></pre></div>
+<div class="out"><pre>float64
+int64
+float64    <span class="c">← c'è un float, quindi diventano tutti float</span></pre></div></div>
+<p>Quando i valori sono misti, NumPy sceglie un tipo capace di contenerli tutti: l'intero 1 diventa <code>1.0</code>. Questo passaggio si chiama <dfn>promozione</dfn> (o upcasting). Se vuoi un tipo preciso, lo dichiari tu:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>print(np.array([0.0, 1.0, 2.0], dtype=np.float16).dtype)</code></pre></div>
+<div class="out"><pre>float16    <span class="c">← 2 byte per elemento invece di 8, ma meno preciso</span></pre></div></div>
+<details class="predict"><summary>Trabocchetto: <code>np.array([1, True]).dtype</code>?</summary><div class="answer"><pre>int64</pre><p>Un bool mescolato con un intero diventa intero, perché <code>True</code> vale 1. Su Windows, con versioni di NumPy precedenti alla 2.0, può uscire <code>int32</code>.</p></div></details>
+
+<h3>Vettore o colonna? La differenza che causa più errori</h3>
+<p>Questi tre array contengono gli stessi tre numeri, ma <strong>non sono la stessa cosa</strong>:</p>
+<div class="fig"><div class="row">
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span>0.1</span><span>0.2</span><span>0.3</span></div><div class="lbl">np.array([0.1, 0.2, 0.3])<br>shape (3,) · 1 asse<br>vettore</div></div>
+  <div class="mxw"><div class="mx" style="grid-template-columns: auto"><span>0.1</span><span>0.2</span><span>0.3</span></div><div class="lbl">np.array([[0.1], [0.2], [0.3]])<br>shape (3, 1) · 2 assi<br>matrice con 1 colonna</div></div>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span>0.1</span><span>0.2</span><span>0.3</span></div><div class="lbl">np.array([[0.1, 0.2, 0.3]])<br>shape (1, 3) · 2 assi<br>matrice con 1 riga</div></div>
+</div></div>
+<p>Il primo ha <strong>una</strong> sola dimensione. Il secondo e il terzo ne hanno <strong>due</strong>: sono matrici, anche se una delle due dimensioni vale 1. Il modo per distinguerli è contare le parentesi quadre all'inizio: <code>[</code> una, <code>[[</code> due.</p>
+<div class="trap"><p><b>Tienilo a mente.</b> Quasi tutti gli errori di broadcasting (<a href="#n4">N4</a>) nascono dal confondere <code>(3,)</code> con <code>(3, 1)</code>.</p></div>
+
+<h3>Creare array senza scrivere i numeri a mano</h3>
+<p>Spesso non vuoi scrivere i valori uno per uno. NumPy ha funzioni apposta:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Funzione</th><th>Cosa crea</th></tr></thead>
+<tbody>
+<tr><td><code>np.zeros(shape)</code></td><td>tutti zeri</td></tr>
+<tr><td><code>np.ones(shape)</code></td><td>tutti uno</td></tr>
+<tr><td><code>np.full(shape, valore)</code></td><td>tutti uguali a <code>valore</code></td></tr>
+<tr><td><code>np.arange(start, stop, step)</code></td><td>come <code>range</code>: da start a stop <strong>escluso</strong>, con passo step</td></tr>
+<tr><td><code>np.linspace(start, stop, num)</code></td><td><code>num</code> numeri equidistanti da start a stop <strong>incluso</strong></td></tr>
+<tr><td><code>np.random.random(shape)</code></td><td>numeri casuali fra 0 e 1</td></tr>
+<tr><td><code>np.random.normal(media, dev_std, shape)</code></td><td>numeri casuali "a campana" intorno alla media</td></tr>
+</tbody></table></div>
+<div class="trap"><p><b>Trappola.</b> La shape si passa come <strong>tupla</strong>, con doppie parentesi: <code>np.ones((2, 3))</code>. Scrivere <code>np.ones(2, 3)</code> dà errore.</p></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>print(np.ones((2, 3)))
+print(np.full((2, 1), 1.1))</code></pre></div>
+<div class="out"><pre>[[1. 1. 1.]
+ [1. 1. 1.]]     <span class="c">← "1." con il punto: sono float</span>
+[[1.1]
+ [1.1]]          <span class="c">← shape (2, 1): una colonna</span></pre></div></div>
+
+<h3>arange o linspace?</h3>
+<p>Tutte e due creano numeri in fila, ma tu decidi cose diverse:</p>
+<ul>
+  <li>con <code>arange</code> decidi <strong>ogni quanto</strong> (il passo), e il numero di valori viene di conseguenza;</li>
+  <li>con <code>linspace</code> decidi <strong>quanti</strong> valori, e il passo viene di conseguenza.</li>
+</ul>
+<div class="snippet"><div class="code"><pre><code>np.arange(1, 7, 2)     parto da 1, passo 2, mi fermo PRIMA del 7
+                       1 → 3 → 5 → (7 escluso)       →  [1 3 5]
+
+np.linspace(0, 1, 11)  11 numeri da 0 a 1, estremi inclusi
+                       passo = (1 - 0) / 10 = 0.1    →  [0. 0.1 0.2 ... 0.9 1.]</code></pre></div></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>print(np.arange(1, 7, 2))
+print(np.linspace(0, 1, 11))</code></pre></div>
+<div class="out"><pre>[1 3 5]
+[0.  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1. ]</pre></div></div>
+
+<h3>Numeri casuali e seed</h3>
+<p>Ogni volta che esegui <code>np.random.random((2, 3))</code> ottieni numeri diversi. Per avere sempre gli stessi, per esempio per confrontare i tuoi risultati con quelli del prof, si fissa il <dfn>seed</dfn> prima di generarli:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>np.random.seed(2)
+print(np.random.random((2, 3)))     <span class="c"># con seed 2 esce sempre la stessa matrice</span></code></pre></div></div>
+
+<h3>Prova tu</h3>
+<details class="predict"><summary>Shape di <code>np.array([[1, 2], [3, 4], [5, 6]])</code>?</summary><div class="answer"><pre>(3, 2)</pre><p>3 liste interne, quindi 3 righe. Ognuna ha 2 numeri, quindi 2 colonne.</p></div></details>
+<details class="predict"><summary><code>np.zeros((2, 4)).size</code>?</summary><div class="answer"><pre>8</pre><p>2 × 4.</p></div></details>
+<details class="predict"><summary><code>np.arange(0, 10, 3)</code>?</summary><div class="answer"><pre>[0 3 6 9]</pre><p>0, 3, 6, 9. Il 12 supererebbe il 10.</p></div></details>
+<details class="predict"><summary>Quanti numeri dà <code>np.linspace(0, 10, 5)</code>, e quali?</summary><div class="answer"><pre>[ 0.   2.5  5.   7.5 10. ]</pre><p>5 numeri, estremi inclusi. Il passo è (10 − 0) / 4 = 2.5.</p></div></details>
+<details class="predict"><summary><code>np.array([1, 2.0, 3]).dtype</code>?</summary><div class="answer"><pre>float64</pre><p>Basta un solo float perché diventino tutti float.</p></div></details>
+
+<div class="ex"><b>Esercizi del prof:</b> <code>2.1_numpy_arrays.ipynb</code>, esercizi 1, 2 e 3.</div>
+</section>
+
+<!-- N3 -->
+<section class="chap" id="n3">
+<h2><span class="num">N3</span>Calcolo con gli array</h2>
+
+<h3>L'idea di base: un calcolo su tutti i numeri insieme</h3>
+<p>Hai una lista di prezzi e vuoi aumentarli tutti di 10. Con quello che sai dalla lezione 1, con una <strong>lista</strong> devi prendere i numeri uno alla volta con un ciclo:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>prezzi = [1, 2, 3]
+nuovi = []
+for p in prezzi:
+    nuovi.append(p + 10)
+print(nuovi)</code></pre></div>
+<div class="out"><pre>[11, 12, 13]</pre></div></div>
+<p>Con un <strong>array</strong> NumPy scrivi l'operazione una volta sola, e NumPy la applica a ogni numero:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>import numpy as np
+prezzi = np.array([1, 2, 3])
+print(prezzi + 10)</code></pre></div>
+<div class="out"><pre>[11 12 13]</pre></div></div>
+<div class="rule"><p><b>Tutta questa sezione in una frase.</b> Scrivi l'operazione sull'array intero, senza ciclo <code>for</code>, e NumPy la esegue su ogni elemento. Tutto il resto sono varianti di questa idea.</p></div>
+
+<div class="trap"><p><b>Trappola.</b> Con le liste la stessa scrittura fa tutt'altro. <code>*</code> ripete la lista e <code>+</code> la allunga:</p></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>print([1, 2, 3] * 2)                 <span class="c"># lista</span>
+print(np.array([1, 2, 3]) * 2)       <span class="c"># array</span>
+print([1, 2, 3] + [10, 20, 30])      <span class="c"># lista</span></code></pre></div>
+<div class="out"><pre>[1, 2, 3, 1, 2, 3]       <span class="c">← la lista viene ripetuta</span>
+[2 4 6]                  <span class="c">← ogni numero viene moltiplicato</span>
+[1, 2, 3, 10, 20, 30]    <span class="c">← le liste vengono attaccate</span></pre></div></div>
+
+<p>Le operazioni sugli array sono di quattro tipi. Le vediamo una alla volta.</p>
+
+<h3>1. Operazioni fra due array: + − * / **</h3>
+<p>I due array vengono accoppiati <strong>posizione per posizione</strong>: il primo numero con il primo, il secondo con il secondo, e così via.</p>
+<div class="snippet"><div class="code"><pre><code>posizione:    0    1    2
+a:            1    2    3
+b:           10   20   30
+             ──   ──   ──
+a + b:       11   22   33</code></pre></div></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>a = np.array([1, 2, 3])
+b = np.array([10, 20, 30])
+print(a + b)
+print(a * b)
+print(b / a)
+print(a ** 2)      <span class="c"># ogni numero al quadrato</span></code></pre></div>
+<div class="out"><pre>[11 22 33]
+[10 40 90]
+[10. 10. 10.]    <span class="c">← la divisione / dà sempre float, come in Python</span>
+[1 4 9]</pre></div></div>
+<p>Con le matrici funziona allo stesso modo: ogni cella viene accoppiata con la cella nella stessa posizione dell'altra matrice.</p>
+<div class="fig"><div class="row">
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(2, auto)"><span class="h">1</span><span>2</span><span>3</span><span>4</span></div><div class="lbl">A</div></div>
+  <span class="op">*</span>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(2, auto)"><span class="h">5</span><span>6</span><span>7</span><span>8</span></div><div class="lbl">B</div></div>
+  <span class="op">=</span>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(2, auto)"><span class="h">5</span><span>12</span><span>21</span><span>32</span></div><div class="lbl">A * B<br>1·5, 2·6, 3·7, 4·8</div></div>
+</div></div>
+<p>Per ora i due array devono avere la <strong>stessa forma</strong>, altrimenti non si sa chi accoppiare con chi. La sezione <a href="#n4">N4</a>, sul broadcasting, spiega quando si può fare anche con forme diverse.</p>
+
+<h3>2. Funzioni applicate a ogni numero</h3>
+<p>NumPy ha versioni delle funzioni matematiche che lavorano su tutto l'array: <code>np.sqrt</code> (radice quadrata), <code>np.abs</code> (valore assoluto), <code>np.exp</code> (e elevato a), <code>np.log</code> (logaritmo) e altre. Funzionano come se passassi ogni elemento alla funzione, uno alla volta.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([1, 4, 9])
+print(np.sqrt(x))
+print(x)                              <span class="c"># x è cambiato?</span>
+print(np.abs(np.array([-3, 0, 2])))</code></pre></div>
+<div class="out"><pre>[1. 2. 3.]
+[1 4 9]          <span class="c">← no: la funzione crea un array NUOVO</span>
+[3 0 2]</pre></div></div>
+<p>Questi due primi tipi di operazioni (fra array e con funzioni) hanno un nome tecnico: <dfn>ufunc</dfn>, da "universal functions". Il risultato ha sempre la <strong>stessa forma</strong> dell'input.</p>
+<div class="why"><p><b>A cosa serve.</b> Nell'esercizio 1 del notebook 2.2 devi calcolare la sigmoide <code>1 / (1 + e^(-x))</code> su tutto un array. Con quello che hai appena visto si scrive in una riga: operazioni fra array e scalari, più <code>np.exp</code>.</p></div>
+
+<h3>3. Aggregazioni: da tanti numeri a uno solo</h3>
+<p>Queste operazioni <strong>riassumono</strong> l'array in un solo numero.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([4, 9, 2])
+print(x.sum())      <span class="c"># somma</span>
+print(x.mean())     <span class="c"># media</span>
+print(x.max())      <span class="c"># valore più grande</span>
+print(x.argmax())   <span class="c"># POSIZIONE del valore più grande</span>
+print(x.min(), x.argmin())</code></pre></div>
+<div class="out"><pre>15       <span class="c">← 4 + 9 + 2</span>
+5.0      <span class="c">← 15 / 3</span>
+9
+1        <span class="c">← il 9 sta in posizione 1 (si parte da 0)</span>
+2 2      <span class="c">← il minimo è 2, e sta in posizione 2</span></pre></div></div>
+<div class="rule"><p><b>max o argmax?</b> <code>max</code> ti dice <strong>quanto</strong> vale il massimo. <code>argmax</code> ti dice <strong>dove</strong> sta. Il prefisso <code>arg</code> significa sempre "la posizione di": vale anche per <code>argmin</code> e <code>argsort</code>.</p></div>
+<p>Puoi scriverle in due modi equivalenti: <code>x.sum()</code> come metodo dell'array, oppure <code>np.sum(x)</code> come funzione di NumPy (vedi <a href="#p10">P10</a>).</p>
+<p>C'è anche <code>x.std()</code>, la deviazione standard, che misura quanto i numeri sono sparsi intorno alla media. Attenzione: NumPy divide per <em>n</em>, mentre con <code>x.std(ddof=1)</code> divide per <em>n − 1</em>. pandas usa <em>n − 1</em> di default, quindi i due risultati possono non coincidere.</p>
+
+<h3>La parte difficile: aggregare su una matrice con axis</h3>
+<p>Con una matrice puoi voler sommare tre cose diverse: tutto, ogni colonna oppure ogni riga. Il parametro <code>axis</code> serve a scegliere.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>m = np.array([[1, 2, 3],
+              [4, 5, 6]])</code></pre></div></div>
+<div class="snippet"><div class="code"><pre><code>          col 0  col 1  col 2
+riga 0:     1      2      3
+riga 1:     4      5      6</code></pre></div></div>
+
+<p><strong>Senza axis</strong> si somma tutto: <code>m.sum()</code> → <code>21</code>.</p>
+
+<p><strong><code>axis=0</code></strong> somma <strong>dall'alto verso il basso</strong> e dà un risultato per ogni colonna:</p>
+<div class="snippet"><div class="code"><pre><code>    1    2    3
++   4    5    6
+─────────────────
+    5    7    9      →  m.sum(axis=0) = [5 7 9]</code></pre></div></div>
+
+<p><strong><code>axis=1</code></strong> somma <strong>da sinistra a destra</strong> e dà un risultato per ogni riga:</p>
+<div class="snippet"><div class="code"><pre><code>1 + 2 + 3 =  6
+4 + 5 + 6 = 15      →  m.sum(axis=1) = [ 6 15]</code></pre></div></div>
+
+<div class="fig"><div class="row">
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span class="h">1</span><span class="h2">2</span><span>3</span><span class="h">4</span><span class="h2">5</span><span>6</span></div><div class="lbl">axis=0: colonne<br>dall'alto in basso</div></div>
+  <span class="op">→</span>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span class="h">5</span><span class="h2">7</span><span>9</span></div><div class="lbl">3 risultati</div></div>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span class="h">1</span><span class="h">2</span><span class="h">3</span><span class="h2">4</span><span class="h2">5</span><span class="h2">6</span></div><div class="lbl">axis=1: righe<br>da sinistra a destra</div></div>
+  <span class="op">→</span>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(2, auto)"><span class="h">6</span><span class="h2">15</span></div><div class="lbl">2 risultati</div></div>
+</div></div>
+
+<div class="rule"><p><b>Come ricordarlo.</b> <code>axis=0</code> schiaccia la matrice verso il basso: restano le colonne. <code>axis=1</code> la schiaccia verso destra: restano le righe.</p>
+<p>Se ti confondi, guarda la shape. <code>m</code> ha shape <code>(2, 3)</code>. Con <code>axis=0</code> togli il primo numero, il 2, e restano 3 risultati. Con <code>axis=1</code> togli il secondo, il 3, e restano 2 risultati.</p></div>
+
+<p>Funziona uguale per tutte le aggregazioni, non solo per la somma:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>print(m.sum(axis=0))
+print(m.sum(axis=1))
+print(m.mean(axis=0))     <span class="c"># media di ogni colonna</span>
+print(m.max(axis=0))      <span class="c"># massimo di ogni colonna</span>
+print(m.argmax(axis=1))   <span class="c"># in ogni riga, la POSIZIONE del massimo</span></code></pre></div>
+<div class="out"><pre>[5 7 9]
+[ 6 15]
+[2.5 3.5 4.5]    <span class="c">← (1+4)/2, (2+5)/2, (3+6)/2</span>
+[4 5 6]
+[2 2]            <span class="c">← in entrambe le righe il massimo è nella colonna 2</span></pre></div></div>
+<p>Al posto di <code>axis=1</code> puoi scrivere <code>axis=-1</code>, cioè "l'ultimo asse". In una matrice sono la stessa cosa. Nel codice del prof trovi spesso <code>-1</code>, perché resta valido qualunque sia il numero di dimensioni.</p>
+
+<details class="predict"><summary>Senza axis, <code>m.argmax()</code> dà 5. Perché proprio 5?</summary>
+<div class="answer"><p>Senza axis, NumPy legge la matrice riga per riga come se fosse una fila unica: <code>1 2 3 4 5 6</code>, posizioni da 0 a 5. Il massimo, 6, sta in posizione 5.</p></div></details>
+
+<h3>Ordinare</h3>
+<div class="back"><p><b>Dalla lezione 1</b> (<a href="#p4">P4</a>). Con le liste c'erano <code>sorted(l)</code>, che crea una lista nuova ordinata, e <code>l.sort()</code>, che ordina la lista stessa e restituisce <code>None</code>. NumPy ha le stesse due versioni.</p></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>s = np.array([30, 10, 20])
+print(np.sort(s))    <span class="c"># come sorted(): copia ordinata</span>
+print(s)             <span class="c"># s è cambiato?</span>
+s.sort()             <span class="c"># come l.sort(): ordina s stesso</span>
+print(s)</code></pre></div>
+<div class="out"><pre>[10 20 30]
+[30 10 20]    <span class="c">← no, np.sort non tocca l'originale</span>
+[10 20 30]    <span class="c">← ora sì</span></pre></div></div>
+<div class="trap"><p><b>Trappola.</b> Scrivere <code>y = s.sort()</code> assegna <code>None</code> a <code>y</code>, esattamente come con le liste.</p></div>
+
+<p>L'ordine è sempre <strong>crescente</strong>, dal più piccolo al più grande. Non esiste un'opzione per l'ordine decrescente: per averlo inverti il risultato con lo slicing a passo −1 della sezione <a href="#p4">P4</a>, cioè <code>np.sort(s)[::-1]</code>.</p>
+
+<p>Su una matrice, <code>np.sort</code> ordina <strong>ogni riga per conto suo</strong>. Non mette in ordine tutti i numeri della matrice. Con <code>axis=0</code> ordina invece ogni colonna.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>q = np.array([[2, 7, 3],
+              [7, 2, 1]])
+print(np.sort(q))            <span class="c"># ogni riga</span>
+print(np.sort(q, axis=0))    <span class="c"># ogni colonna</span></code></pre></div>
+<div class="out"><pre>[[2 3 7]
+ [1 2 7]]
+[[2 2 1]
+ [7 7 3]]</pre></div></div>
+
+<h3>argsort: le posizioni in ordine</h3>
+<p><code>np.argsort</code> non restituisce i valori ordinati ma le loro <strong>posizioni</strong>, nell'ordine in cui andrebbero messe. Ricorda: "arg" significa "posizione".</p>
+<div class="snippet"><div class="code"><pre><code>posizione:    0    1    2
+s:           30   10   20
+
+il più piccolo (10) sta in posizione 1
+poi viene 20, in posizione 2
+poi viene 30, in posizione 0     →  np.argsort(s) = [1 2 0]</code></pre></div></div>
+<p>A cosa serve? A ordinare <strong>un'altra cosa</strong> secondo questi valori. Per esempio, dei nomi in base ai punteggi:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>punteggi = np.array([30, 10, 20])
+nomi = np.array(["Anna", "Bruno", "Carla"])
+ordine = np.argsort(punteggi)
+print(ordine)
+print(nomi[ordine])     <span class="c"># i nomi presi in quell'ordine</span></code></pre></div>
+<div class="out"><pre>[1 2 0]
+['Bruno' 'Carla' 'Anna']    <span class="c">← dal punteggio più basso al più alto</span></pre></div></div>
+<p><code>nomi[ordine]</code> vuol dire "dammi gli elementi di <code>nomi</code> nelle posizioni 1, 2, 0". Si chiama fancy indexing e lo trovi in <a href="#n5">N5</a>.</p>
+
+<h3>4. Prodotto scalare e prodotto fra matrici: np.dot o @</h3>
+<p>Questo è l'unico tipo che <strong>non</strong> lavora posizione per posizione.</p>
+<p><strong>Prodotto scalare fra due vettori:</strong> moltiplichi le coppie e poi <strong>sommi</strong> tutto. Il risultato è un solo numero.</p>
+<div class="snippet"><div class="code"><pre><code>a:        1     2     3
+b:        4     5     6
+          ↓     ↓     ↓
+prodotti: 4    10    18
+somma:    4 + 10 + 18 = 32</code></pre></div></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+print(np.dot(a, b))
+print(a @ b)          <span class="c"># stessa cosa, scritta con l'operatore @</span></code></pre></div>
+<div class="out"><pre>32
+32</pre></div></div>
+
+<p><strong>Prodotto fra matrici</strong> <code>A @ B</code>: ogni cella del risultato è il prodotto scalare fra una <strong>riga di A</strong> e una <strong>colonna di B</strong>.</p>
+<div class="snippet"><div class="code"><pre><code>A = [[1, 2],        B = [[5, 6],
+     [3, 4]]             [7, 8]]
+
+cella (0,0) = riga 0 di A · colonna 0 di B = 1·5 + 2·7 = 19
+cella (0,1) = riga 0 di A · colonna 1 di B = 1·6 + 2·8 = 22
+cella (1,0) = riga 1 di A · colonna 0 di B = 3·5 + 4·7 = 43
+cella (1,1) = riga 1 di A · colonna 1 di B = 3·6 + 4·8 = 50</code></pre></div></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>A = np.array([[1, 2], [3, 4]])
+B = np.array([[5, 6], [7, 8]])
+print(A * B)     <span class="c"># posizione per posizione</span>
+print(A @ B)     <span class="c"># prodotto fra matrici</span></code></pre></div>
+<div class="out"><pre>[[ 5 12]
+ [21 32]]
+[[19 22]
+ [43 50]]</pre></div></div>
+<div class="trap"><p><b>Trappola.</b> <code>*</code> e <code>@</code> sono due operazioni diverse. <code>*</code> moltiplica posizione per posizione. <code>@</code> (oppure <code>np.dot</code>) fa il prodotto fra matrici, righe per colonne.</p></div>
+
+<h3>Tutto insieme: perché ne vale la pena</h3>
+<div class="back"><p><b>Dalla lezione 1</b> (<a href="#p8">P8</a>). La distanza euclidea richiedeva una funzione con un ciclo <code>for</code>. Con quello che hai visto in questa sezione diventa una riga: sottrai due array (operazione fra array), elevi al quadrato (<code>**</code>), sommi (aggregazione) e fai la radice (<code>np.sqrt</code>).</p></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([1, 2, 3])
+y = np.array([2, 4, 5])
+print(np.sqrt(((x - y) ** 2).sum()))</code></pre></div>
+<div class="out"><pre>3.0      <span class="c">← lo stesso risultato della funzione della lezione 1</span></pre></div></div>
+<p>Leggila dall'interno verso l'esterno: <code>x - y</code> = <code>[-1 -2 -2]</code>, al quadrato <code>[1 4 4]</code>, somma 9, radice 3.</p>
+
+<h3>Prova tu, senza eseguire</h3>
+<p>Con <code>v = np.array([3, 8, 1])</code> e <code>m = np.array([[1, 1], [5, 2]])</code>:</p>
+<details class="predict"><summary><code>v * 2</code></summary><div class="answer"><pre>[ 6 16  2]</pre><p>Ogni numero moltiplicato per 2. Con una lista avresti ottenuto <code>[3, 8, 1, 3, 8, 1]</code>.</p></div></details>
+<details class="predict"><summary><code>v.argmax()</code></summary><div class="answer"><pre>1</pre><p>Il massimo è 8 e sta in posizione 1. La risposta non è 8: argmax restituisce la posizione, non il valore.</p></div></details>
+<details class="predict"><summary><code>m.sum(axis=0)</code></summary><div class="answer"><pre>[6 3]</pre><p>Dall'alto in basso, colonna per colonna: 1+5 = 6 e 1+2 = 3.</p></div></details>
+<details class="predict"><summary><code>m.sum(axis=1)</code></summary><div class="answer"><pre>[2 7]</pre><p>Da sinistra a destra, riga per riga: 1+1 = 2 e 5+2 = 7.</p></div></details>
+<details class="predict"><summary><code>np.argsort(v)</code></summary><div class="answer"><pre>[2 0 1]</pre><p>Il più piccolo (1) sta in posizione 2, poi il 3 in posizione 0, poi l'8 in posizione 1.</p></div></details>
+<details class="predict"><summary><code>np.dot(v, np.array([1, 0, 2]))</code></summary><div class="answer"><pre>5</pre><p>3·1 + 8·0 + 1·2 = 3 + 0 + 2 = 5.</p></div></details>
+
+<div class="ex"><b>Esercizi del prof:</b> <code>2.2_numpy_operations.ipynb</code>, esercizi 1, 2 e 3. Nel 3 devi trovare i valori <em>più alti</em>: ricordati che l'ordinamento è sempre crescente.</div>
+</section>
+
+<!-- N4 -->
+<section class="chap" id="n4">
+<h2><span class="num">N4</span>Broadcasting</h2>
+
+<h3>Il problema</h3>
+<p>In <a href="#n3">N3</a> le operazioni fra due array accoppiavano i numeri posizione per posizione, e per questo i due array dovevano avere la stessa forma. Eppure hai già visto un caso in cui le forme erano diverse e funzionava lo stesso:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([1, 2, 3])
+print(x + 10)</code></pre></div>
+<div class="out"><pre>[11 12 13]</pre></div></div>
+<p><code>x</code> ha 3 numeri, <code>10</code> ne ha uno solo. NumPy ha fatto finta che il 10 fosse ripetuto tre volte:</p>
+<div class="snippet"><div class="code"><pre><code>x:       1    2    3
+10:     10  (10) (10)      ← il 10 viene "allargato" per coprire x
+        ──   ──   ──
+x + 10: 11   12   13</code></pre></div></div>
+<p>Questo meccanismo si chiama <dfn>broadcasting</dfn>: quando le forme sono diverse, NumPy allarga l'array più piccolo finché le forme coincidono. Non lo copia davvero in memoria, fa solo finta. Il caso dello scalare è il più semplice. Il broadcasting però funziona anche fra array, seguendo delle regole precise.</p>
+
+<h3>Le tre regole</h3>
+<div class="rule">
+<p><b>Come si applicano.</b> Scrivi le due shape una sotto l'altra, <strong>allineate a destra</strong>, e segui le regole in ordine.</p>
+<ol class="plain">
+  <li>Se una shape è più corta, <strong>aggiungile degli 1 a sinistra</strong> finché hanno la stessa lunghezza.</li>
+  <li>Confronta le colonne una per una. Se in una colonna uno dei due vale <strong>1</strong>, quel lato viene <strong>allargato</strong> fino al valore dell'altro.</li>
+  <li>Se in una colonna i due valori sono <strong>diversi e nessuno dei due è 1</strong>, NumPy dà <strong>errore</strong>.</li>
+</ol>
+</div>
+
+<h3>Esempio 1: una matrice più un vettore (funziona)</h3>
+<p>Vuoi aggiungere <code>[10, 20, 30]</code> a ogni riga di una matrice 2×3.</p>
+<div class="snippet"><div class="code"><pre><code>m:   shape (2, 3)
+v:   shape    (3,)
+
+regola 1:  v ha un numero in meno → aggiungo un 1 a sinistra
+           m:  (2, 3)
+           v:  (1, 3)
+
+regola 2:  colonna di sinistra: 2 contro 1 → v viene allargato a 2
+           colonna di destra:   3 contro 3 → già uguali
+
+risultato: (2, 3)  ✓</code></pre></div></div>
+<p>In pratica <code>v</code> viene ricopiato su ogni riga:</p>
+<div class="fig"><div class="row">
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div><div class="lbl">m (2, 3)</div></div>
+  <span class="op">+</span>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span>10</span><span>20</span><span>30</span><span class="ghost">10</span><span class="ghost">20</span><span class="ghost">30</span></div><div class="lbl">v allargato (2, 3)</div></div>
+  <span class="op">=</span>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span>11</span><span>22</span><span>33</span><span>14</span><span>25</span><span>36</span></div><div class="lbl">risultato (2, 3)</div></div>
+</div><p class="cap">Le celle tratteggiate non esistono in memoria: NumPy fa finta che ci siano.</p></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>m = np.array([[1, 2, 3],
+              [4, 5, 6]])
+v = np.array([10, 20, 30])
+print(m + v)</code></pre></div>
+<div class="out"><pre>[[11 22 33]
+ [14 25 36]]</pre></div></div>
+
+<h3>Esempio 2: un vettore più una colonna (funziona, e sorprende)</h3>
+<div class="snippet"><div class="code"><pre><code>x:   shape    (3,)      il vettore [1, 2, 3]
+y:   shape (3, 1)       la colonna [[11], [12], [13]]
+
+regola 1:  x → (1, 3)
+           x:  (1, 3)
+           y:  (3, 1)
+
+regola 2:  colonna sinistra: 1 contro 3 → x allargato a 3 (verso il basso)
+           colonna destra:   3 contro 1 → y allargato a 3 (verso destra)
+
+risultato: (3, 3)  ✓</code></pre></div></div>
+<p>Qui <strong>entrambi</strong> vengono allargati: <code>x</code> verso il basso, <code>y</code> verso destra.</p>
+<div class="fig"><div class="row">
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span>1</span><span>2</span><span>3</span><span class="ghost">1</span><span class="ghost">2</span><span class="ghost">3</span><span class="ghost">1</span><span class="ghost">2</span><span class="ghost">3</span></div><div class="lbl">x allargato<br>verso il basso</div></div>
+  <span class="op">+</span>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span>11</span><span class="ghost">11</span><span class="ghost">11</span><span>12</span><span class="ghost">12</span><span class="ghost">12</span><span>13</span><span class="ghost">13</span><span class="ghost">13</span></div><div class="lbl">y allargato<br>verso destra</div></div>
+  <span class="op">=</span>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span>12</span><span>13</span><span>14</span><span>13</span><span>14</span><span>15</span><span>14</span><span>15</span><span>16</span></div><div class="lbl">risultato (3, 3)</div></div>
+</div></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([1, 2, 3])
+y = np.array([[11], [12], [13]])
+print(x + y)</code></pre></div>
+<div class="out"><pre>[[12 13 14]
+ [13 14 15]
+ [14 15 16]]</pre></div></div>
+
+<h3>Esempio 3: quando fallisce</h3>
+<p>Hai una matrice 3×2 e vuoi aggiungere 11 alla prima riga, 12 alla seconda e 13 alla terza. Provi così:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([[1, 2],
+              [3, 4],
+              [5, 6]])          <span class="c"># (3, 2)</span>
+y = np.array([11, 12, 13])      <span class="c"># (3,)</span>
+print(x + y)</code></pre></div>
+<div class="out"><pre>ValueError: operands could not be broadcast together with shapes (3,2) (3,)</pre></div></div>
+<p>Applica le regole a mano per capire perché:</p>
+<div class="snippet"><div class="code"><pre><code>x:  (3, 2)
+y:     (3,)   → regola 1 → (1, 3)
+
+           x:  (3, 2)
+           y:  (1, 3)
+                    ↑
+colonna di destra: 2 contro 3 → diversi, e nessuno è 1 → regola 3: ERRORE ✗</code></pre></div></div>
+<p>Il problema è che <code>y</code> è un vettore, e un vettore si allinea sempre con l'<strong>ultima</strong> dimensione, cioè con le colonne. Tu invece volevi un numero per ogni <strong>riga</strong>. Serve una <strong>colonna</strong>, di shape <code>(3, 1)</code>:</p>
+<div class="snippet"><div class="code"><pre><code>x:  (3, 2)
+y:  (3, 1)     colonna sinistra: 3 contro 3 → ok
+               colonna destra:   2 contro 1 → y allargato a 2
+risultato: (3, 2)  ✓</code></pre></div></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>y_col = y.reshape(-1, 1)     <span class="c"># trasforma il vettore in colonna (reshape: N6)</span>
+print(y_col.shape)
+print(x + y_col)</code></pre></div>
+<div class="out"><pre>(3, 1)
+[[12 13]
+ [15 16]
+ [18 19]]</pre></div></div>
+<p>Un altro modo di scrivere la stessa cosa è <code>y[:, np.newaxis]</code>.</p>
+<div class="trap"><p><b>Il riassunto di questa sezione.</b> Un vettore <code>(n,)</code> si comporta come una <strong>riga</strong>. Se vuoi che si comporti come una colonna, lo devi trasformare in <code>(n, 1)</code>.</p></div>
+
+<h3>A cosa serve: centrare i dati</h3>
+<p>Nel machine learning un dataset si tiene in una matrice con <strong>una riga per campione</strong> (per esempio un fiore) e <strong>una colonna per caratteristica</strong> (per esempio lunghezza del petalo). Spesso bisogna sottrarre a ogni colonna la sua media, cioè "centrare" i dati. Con il broadcasting:</p>
+<div class="snippet"><div class="code"><pre><code>data:               shape (3, 2)     3 campioni, 2 caratteristiche
+data.mean(axis=0):  shape (2,)       una media per colonna
+                          → regola 1 → (1, 2) → allargata su 3 righe ✓</code></pre></div></div>
+<p>È l'esercizio 5 del notebook 2.2: prova a scriverlo tu, adesso hai tutti i pezzi.</p>
+
+<h3>Prova tu</h3>
+<p>Per ogni coppia di shape, applica le regole e scrivi la shape del risultato oppure "errore":</p>
+<details class="predict"><summary><code>(4, 3)</code> + <code>(3,)</code></summary><div class="answer"><pre>(4, 3)</pre><p>(3,) diventa (1, 3). 4 contro 1 → allargo. 3 contro 3 → ok.</p></div></details>
+<details class="predict"><summary><code>(4, 3)</code> + <code>(4,)</code></summary><div class="answer"><pre>errore</pre><p>(4,) diventa (1, 4). Colonna destra: 3 contro 4, diversi e nessuno è 1.</p></div></details>
+<details class="predict"><summary><code>(4, 1)</code> + <code>(1, 5)</code></summary><div class="answer"><pre>(4, 5)</pre><p>Tutti e due vengono allargati.</p></div></details>
+<details class="predict"><summary><code>(5,)</code> + <code>(5, 1)</code></summary><div class="answer"><pre>(5, 5)</pre><p>Come l'esempio 2: un vettore più una colonna dà una matrice.</p></div></details>
+<details class="predict"><summary><code>(2, 1, 3)</code> + <code>(4, 1)</code> <span class="hint">(più difficile)</span></summary><div class="answer"><pre>(2, 4, 3)</pre><p>(4, 1) diventa (1, 4, 1). Poi colonna per colonna: 2|1 → 2, 1|4 → 4, 3|1 → 3.</p></div></details>
+<p>Per verificare in un colpo solo:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>casi = [((4, 3), (3,)), ((4, 3), (4,)), ((4, 1), (1, 5)), ((5,), (5, 1)), ((2, 1, 3), (4, 1))]
+for s1, s2 in casi:
+    try:
+        out = (np.zeros(s1) + np.zeros(s2)).shape
+    except ValueError:
+        out = "ERRORE"
+    print(s1, "+", s2, "->", out)</code></pre></div></div>
+
+<div class="ex"><b>Esercizi del prof:</b> <code>2.2_numpy_operations.ipynb</code>, esercizi 4 e 5.</div>
+</section>
+
+<!-- N5 -->
+<section class="chap" id="n5">
+<h2><span class="num">N5</span>Accedere agli array</h2>
+<p>Hai un array e vuoi prenderne un pezzo: un numero, una riga, una colonna, oppure "tutti i numeri maggiori di 4". Ci sono quattro modi per farlo, che vediamo uno alla volta.</p>
+
+<h3>1. Un elemento: indice semplice</h3>
+<div class="back"><p><b>Dalla lezione 1</b> (<a href="#p3">P3</a>). Con le liste scrivi <code>l[2]</code>. Con una matrice servono due coordinate, riga e colonna, e le scrivi <strong>dentro le stesse parentesi</strong>, separate da una virgola: <code>x[riga, colonna]</code>.</p></div>
+<div class="snippet"><div class="code"><pre><code>x = np.array([[2, 3, 4],
+              [5, 6, 7]])
+
+           col 0  col 1  col 2
+riga 0:      2      3      4
+riga 1:      5      6      7
+
+x[1, 2]   → riga 1, colonna 2  → 7
+x[0, -1]  → riga 0, ultima     → 4
+x[0, -2]  → riga 0, penultima  → 3</code></pre></div></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([[2, 3, 4], [5, 6, 7]])
+print(x[1, 2], x[0, -1], x[0, -2])
+x[1, 2] = 1          <span class="c"># si può anche modificare</span>
+print(x)</code></pre></div>
+<div class="out"><pre>7 4 3
+[[2 3 4]
+ [5 6 1]]</pre></div></div>
+
+<h3>2. Un pezzo: slicing</h3>
+<div class="back"><p><b>Dalla lezione 1</b> (<a href="#p3">P3</a>, <a href="#p4">P4</a>). È lo stesso <code>start:stop:step</code> di stringhe e liste: start incluso, stop escluso. L'unica novità è che ne scrivi <strong>uno per le righe e uno per le colonne</strong>, separati dalla virgola.</p></div>
+<div class="snippet"><div class="code"><pre><code>x[ righe , colonne ]
+   ─────   ───────
+   quali    quali
+   righe    colonne
+
+":" da solo = "tutte"</code></pre></div></div>
+<p>Con questa matrice:</p>
+<div class="snippet"><div class="code"><pre><code>x = np.array([[1, 2, 3],
+              [4, 5, 6],
+              [7, 8, 9]])</code></pre></div></div>
+<div class="fig"><div class="row">
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span>1</span><span class="h">2</span><span class="h">3</span><span>4</span><span class="h">5</span><span class="h">6</span><span>7</span><span class="h">8</span><span class="h">9</span></div><div class="lbl">x[:, 1:]<br>righe: tutte<br>colonne: dalla 1 in poi</div></div>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span class="h2">1</span><span>2</span><span class="h2">3</span><span class="h2">4</span><span>5</span><span class="h2">6</span><span>7</span><span>8</span><span>9</span></div><div class="lbl">x[:2, ::2]<br>righe: 0 e 1 (la 2 è esclusa)<br>colonne: a passo 2 (0 e 2)</div></div>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span>1</span><span>2</span><span>3</span><span class="h">4</span><span class="h">5</span><span>6</span><span class="h">7</span><span class="h">8</span><span>9</span></div><div class="lbl">x[1:, :2]<br>righe: dalla 1 in poi<br>colonne: 0 e 1</div></div>
+</div></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+print(x[:, 1:])
+print(x[:2, ::2])
+print(x[1:, :2])</code></pre></div>
+<div class="out"><pre>[[2 3]
+ [5 6]
+ [8 9]]
+[[1 3]
+ [4 6]]
+[[4 5]
+ [7 8]]</pre></div></div>
+
+<h3>Righe e colonne intere</h3>
+<p>Se scrivi meno indici di quante sono le dimensioni, NumPy completa <strong>a destra</strong> con <code>:</code>, cioè "tutto".</p>
+<div class="snippet"><div class="code"><pre><code>x[1]       è come  x[1, :]   → riga 1, tutte le colonne   → la riga 1
+x[:, 1]    righe tutte, colonna 1                           → la colonna 1</code></pre></div></div>
+<p>Per una riga basta <code>x[1]</code>. Per una colonna invece il <code>:</code> delle righe va scritto: <code>x[:, 1]</code>.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([[2, 3, 4], [5, 6, 7]])
+print(x[1])
+print(x[:, 1])</code></pre></div>
+<div class="out"><pre>[5 6 7]
+[3 6]      <span class="c">← la colonna esce "in orizzontale": è un vettore 1-D</span></pre></div></div>
+
+<h3>Intero o slice: cambia la shape</h3>
+<p>Guarda questi due. Prendono gli stessi numeri, ma la forma è diversa:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>print(x[:, 1].shape)      <span class="c"># colonna 1 con un intero</span>
+print(x[:, 1:2].shape)    <span class="c"># colonna 1 con una slice</span></code></pre></div>
+<div class="out"><pre>(2,)       <span class="c">← vettore</span>
+(2, 1)     <span class="c">← colonna (matrice con 1 colonna)</span></pre></div></div>
+<div class="rule"><p><b>Regola.</b> Un <strong>intero</strong> come indice fa sparire la sua dimensione. Una <strong>slice</strong> la mantiene, anche se prende un solo elemento. Quindi <code>x[:, 1]</code> perde la dimensione delle colonne e diventa un vettore, mentre <code>x[:, 1:2]</code> resta una matrice.</p></div>
+
+<h3>Attenzione: una slice non è una copia</h3>
+<div class="back"><p><b>Dalla lezione 1</b> (<a href="#p2">P2</a>). Ricordi le due etichette sulla stessa lista? Una slice di un array funziona così: non crea un array nuovo, ma una <dfn>view</dfn>, cioè una finestra sugli <strong>stessi</strong> numeri. Se scrivi nella view, modifichi l'originale.</p></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+view = x[:, 1:]        <span class="c"># una finestra sulle colonne 1 e 2</span>
+view[:, :] = 0         <span class="c"># scrivo zeri nella finestra</span>
+print(x)</code></pre></div>
+<div class="out"><pre>[[1 0 0]
+ [4 0 0]
+ [7 0 0]]    <span class="c">← x è cambiato anche se non l'ho toccato direttamente</span></pre></div></div>
+<p>Se vuoi un array indipendente, fai una copia esplicita con <code>.copy()</code>:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+safe = x[:, 1:].copy()
+safe[:, :] = 0
+print(x)</code></pre></div>
+<div class="out"><pre>[[1 2 3]
+ [4 5 6]
+ [7 8 9]]    <span class="c">← intatto</span></pre></div></div>
+<div class="trap"><p><b>Trappola.</b> Con le liste Python <code>lista[1:]</code> crea una <strong>copia</strong>. Con gli array NumPy è il contrario: una slice è una view. NumPy fa così per non copiare milioni di numeri ogni volta.</p></div>
+
+<h3>3. Per condizione: le maschere</h3>
+<p>Vuoi "tutti i numeri maggiori di 4". Il procedimento ha due passi.</p>
+<p><strong>Passo 1: il confronto.</strong> Un confronto su un array non dà un solo True o False: confronta <strong>ogni numero</strong> e dà un array di True/False della stessa forma. Questo array si chiama <dfn>maschera</dfn>.</p>
+<div class="snippet"><div class="code"><pre><code>x:        1.2    4.1    1.5    4.5
+x > 4:   False  True   False  True</code></pre></div></div>
+<p><strong>Passo 2: il filtro.</strong> <code>x[maschera]</code> tiene solo i numeri dove la maschera vale True.</p>
+<div class="snippet"><div class="code"><pre><code>x[x > 4]:         4.1           4.5     → [4.1 4.5]</code></pre></div></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([1.2, 4.1, 1.5, 4.5])
+mask = x &gt; 4
+print(mask)
+print(x[mask])</code></pre></div>
+<div class="out"><pre>[False  True False  True]
+[4.1 4.5]</pre></div></div>
+<p>Con una matrice il risultato è sempre un <strong>vettore 1-D</strong>. Il motivo è che i numeri scelti in generale non formano un rettangolo:</p>
+<div class="fig"><div class="row">
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(2, auto)"><span>1.2</span><span>4.1</span><span>1.5</span><span>4.5</span></div><div class="lbl">x2</div></div>
+  <span class="op">→</span>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(2, auto); font-size:12px"><span>False</span><span class="h">True</span><span class="h">True</span><span class="h">True</span></div><div class="lbl">x2 &gt; 1.3<br>3 caselle su 4:<br>non è un rettangolo</div></div>
+  <span class="op">→</span>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span class="h">4.1</span><span class="h">1.5</span><span class="h">4.5</span></div><div class="lbl">x2[x2 &gt; 1.3]<br>shape (3,)</div></div>
+</div></div>
+
+<h3>Più condizioni insieme</h3>
+<p>Per "maggiore o uguale a 1 <strong>e</strong> minore o uguale a 5" combini due maschere. Con gli array però non si usano <code>and</code>, <code>or</code> e <code>not</code> della lezione 1, ma dei simboli:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Lezione 1</th><th>Con gli array</th><th>Significato</th></tr></thead>
+<tbody>
+<tr><td><code>and</code></td><td><code>&amp;</code></td><td>entrambe vere</td></tr>
+<tr><td><code>or</code></td><td><code>|</code></td><td>almeno una vera</td></tr>
+<tr><td><code>not</code></td><td><code>~</code></td><td>il contrario</td></tr>
+</tbody></table></div>
+<div class="snippet"><div class="code"><pre><code>x:            0.5    1.0    3.0    5.0    7.0
+x >= 1:      False  True   True   True   True
+x &lt;= 5:      True   True   True   True   False
+(&amp;) entrambe: False  True   True   True   False   → [1. 3. 5.]</code></pre></div></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([0.5, 1.0, 3.0, 5.0, 7.0])
+print(x[(x &gt;= 1) &amp; (x &lt;= 5)])</code></pre></div>
+<div class="out"><pre>[1. 3. 5.]</pre></div></div>
+<div class="trap"><p><b>Due trappole.</b> Con <code>and</code> invece di <code>&amp;</code> ottieni <code>ValueError: The truth value of an array with more than one element is ambiguous</code>. E le <strong>parentesi intorno a ogni confronto sono obbligatorie</strong>: <code>(x &gt;= 1) &amp; (x &lt;= 5)</code>. Senza, NumPy calcolerebbe <code>1 &amp; x</code> per primo.</p></div>
+
+<h3>Modificare con una maschera</h3>
+<p>Qui c'è una distinzione sottile ma importante.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([1.2, 4.1, 1.5, 4.5])
+x[x &gt; 4] = 0           <span class="c"># A: assegno direttamente</span>
+print(x)</code></pre></div>
+<div class="out"><pre>[1.2 0.  1.5 0. ]      <span class="c">← x è cambiato</span></pre></div></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([1.2, 4.1, 1.5, 4.5])
+masked = x[x &gt; 4]      <span class="c"># B: prima estraggo...</span>
+masked[:] = 0          <span class="c">#    ...poi modifico quello che ho estratto</span>
+print(x)</code></pre></div>
+<div class="out"><pre>[1.2 4.1 1.5 4.5]      <span class="c">← x NON è cambiato</span></pre></div></div>
+<p>Il motivo: <code>x[x &gt; 4]</code> letto da solo crea una <strong>copia</strong>, non una view. Nel caso A scrivi "attraverso" la maschera, direttamente dentro <code>x</code>. Nel caso B scrivi nella copia.</p>
+
+<h3>4. Per posizione: fancy indexing</h3>
+<p>Invece di una condizione, dai una <strong>lista di posizioni</strong>: "dammi gli elementi 1 e 3".</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([7.0, 9.0, 6.0, 5.0])
+print(x[[1, 3]])       <span class="c"># nota le doppie parentesi: dentro c'è una lista</span></code></pre></div>
+<div class="out"><pre>[9. 5.]</pre></div></div>
+<p>Con una matrice ci sono due casi, e il secondo è quello che fa sbagliare tutti.</p>
+<p><strong>Una lista</strong> sceglie delle <strong>righe intere</strong>:</p>
+<div class="snippet"><div class="code"><pre><code>x2 = np.arange(9.0).reshape(3, 3)       x2[[1, 2]]  →  righe 1 e 2
+
+   0  1  2
+   3  4  5    ← riga 1
+   6  7  8    ← riga 2</code></pre></div></div>
+<p><strong>Due liste</strong> vengono lette <strong>a coppie</strong>: il primo numero della prima lista con il primo della seconda, il secondo con il secondo.</p>
+<div class="snippet"><div class="code"><pre><code>x2[[1, 2], [0, 2]]
+
+   righe:    [1, 2]
+   colonne:  [0, 2]
+              ↓  ↓
+   coppie:  (1,0) (2,2)   →  x2[1,0] = 3,  x2[2,2] = 8   →  [3. 8.]</code></pre></div></div>
+<div class="fig"><div class="row">
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span>0</span><span>1</span><span>2</span><span class="h">3</span><span class="h">4</span><span class="h">5</span><span class="h">6</span><span class="h">7</span><span class="h">8</span></div><div class="lbl">x2[[1, 2]]<br>righe 1 e 2</div></div>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span>0</span><span>1</span><span>2</span><span class="h">3</span><span>4</span><span>5</span><span>6</span><span>7</span><span class="h">8</span></div><div class="lbl">x2[[1, 2], [0, 2]]<br>solo 2 celle: (1,0) e (2,2)</div></div>
+  <div class="mxw"><div class="mx" style="grid-template-columns: repeat(3, auto)"><span>0</span><span>1</span><span>2</span><span class="h2">3</span><span>4</span><span class="h2">5</span><span class="h2">6</span><span>7</span><span class="h2">8</span></div><div class="lbl">x2[[1, 2], :][:, [0, 2]]<br>il blocco 2×2</div></div>
+</div></div>
+<p>Se volevi il <strong>blocco</strong> righe 1-2 × colonne 0-2, servono due passi: prima scegli le righe, poi fra quelle scegli le colonne.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x2 = np.arange(9.0).reshape(3, 3)
+print(x2[[1, 2]])
+print(x2[[1, 2], [0, 2]])
+print(x2[[1, 2], :][:, [0, 2]])</code></pre></div>
+<div class="out"><pre>[[3. 4. 5.]
+ [6. 7. 8.]]
+[3. 8.]
+[[3. 5.]
+ [6. 8.]]</pre></div></div>
+<p>Come per le maschere, <code>x[[1, 3]] = 0</code> modifica <code>x</code>, mentre <code>sel = x[[1, 3]]</code> è una copia.</p>
+
+<h3>Riassunto: view o copia?</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Come selezioni</th><th>Esempio</th><th>Cosa ottieni</th><th>Se scrivi nel risultato, <code>x</code> cambia?</th></tr></thead>
+<tbody>
+<tr><td>Indice semplice</td><td><code>x[1, 2]</code></td><td>un numero</td><td>—</td></tr>
+<tr><td>Slicing</td><td><code>x[:, 1:]</code></td><td><strong>view</strong></td><td><strong>Sì</strong></td></tr>
+<tr><td>Maschera</td><td><code>x[x &gt; 4]</code></td><td>copia</td><td>No</td></tr>
+<tr><td>Fancy</td><td><code>x[[1, 3]]</code></td><td>copia</td><td>No</td></tr>
+</tbody></table></div>
+<p>In tutti i casi invece <code>x[...] = valore</code>, scritto direttamente, modifica <code>x</code>.</p>
+<p>Puoi anche combinare i metodi, per esempio <code>x[[0, 2], :2]</code> (righe 0 e 2, prime due colonne). La regola sulla forma resta la stessa: ogni intero fa sparire una dimensione, mentre slice, liste e maschere la mantengono.</p>
+
+<h3>Prova tu</h3>
+<p>Con <code>x = np.array([[10, 20, 30], [40, 50, 60]])</code>:</p>
+<details class="predict"><summary><code>x[1, 0]</code></summary><div class="answer"><pre>40</pre></div></details>
+<details class="predict"><summary><code>x[:, 2]</code></summary><div class="answer"><pre>[30 60]</pre><p>Tutte le righe, colonna 2.</p></div></details>
+<details class="predict"><summary><code>x[0, 1:]</code></summary><div class="answer"><pre>[20 30]</pre></div></details>
+<details class="predict"><summary><code>x[x &gt; 25]</code></summary><div class="answer"><pre>[30 40 50 60]</pre><p>Un vettore 1-D, letto riga per riga.</p></div></details>
+<details class="predict"><summary><code>x[[0, 1], [2, 0]]</code></summary><div class="answer"><pre>[30 40]</pre><p>Le coppie (0, 2) e (1, 0).</p></div></details>
+<details class="predict"><summary>Dopo <code>v = x[0]; v[0] = 99</code>, quanto vale <code>x[0, 0]</code>?</summary><div class="answer"><pre>99</pre><p><code>x[0]</code> è <code>x[0, :]</code>: interi e slice, quindi una view.</p></div></details>
+
+<div class="ex"><b>Esercizi del prof:</b> <code>2.3_numpy_array_manipulation.ipynb</code>, esercizi 1 e 2. Nel 2, prima di eseguire, chiediti se stai scrivendo <em>attraverso</em> l'indice o <em>dentro</em> una copia.</div>
+</section>
+
+<!-- N6 -->
+<section class="chap" id="n6">
+<h2><span class="num">N6</span>Lavorare con gli array</h2>
+<p>Finora hai calcolato e selezionato. Qui vedi come <strong>riorganizzare</strong> gli array: attaccarli, dividerli e cambiargli forma. In nessuno di questi casi i numeri cambiano: cambia solo come sono disposti.</p>
+
+<h3>Attaccare due array: concatenate</h3>
+<div class="back"><p><b>Dalla lezione 1</b> (<a href="#p4">P4</a>). Con le liste, <code>[1, 2] + [3, 4]</code> le attacca. Con gli array <code>+</code> somma, quindi per attaccarli serve <code>np.concatenate</code>.</p></div>
+<p>Con le matrici puoi attaccarle in due direzioni: una <strong>sotto</strong> l'altra, oppure una <strong>accanto</strong> all'altra. Lo decide <code>axis</code>:</p>
+<div class="snippet"><div class="code"><pre><code>x = [[1, 2, 3],        y = [[11, 12, 13],
+     [4, 5, 6]]             [14, 15, 16]]
+
+axis=0 (sotto):          axis=1 (accanto):
+   1  2  3                  1  2  3  11 12 13
+   4  5  6                  4  5  6  14 15 16
+  11 12 13
+  14 15 16               shape (2, 6)
+shape (4, 3)</code></pre></div></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([[1, 2, 3], [4, 5, 6]])
+y = np.array([[11, 12, 13], [14, 15, 16]])
+print(np.concatenate((x, y)))            <span class="c"># axis=0 è il default</span>
+print(np.concatenate((x, y), axis=1))</code></pre></div>
+<div class="out"><pre>[[ 1  2  3]
+ [ 4  5  6]
+ [11 12 13]
+ [14 15 16]]
+[[ 1  2  3 11 12 13]
+ [ 4  5  6 14 15 16]]</pre></div></div>
+<div class="rule"><p><b>La condizione.</b> Lungo la direzione in cui attacchi, le lunghezze possono essere diverse. Nell'<strong>altra</strong> direzione devono coincidere. Per mettere due matrici una sotto l'altra devono avere lo stesso numero di colonne. Per metterle una accanto all'altra, lo stesso numero di righe.</p></div>
+<div class="snippet"><div class="code"><pre><code>(2, 2) sotto (3, 2)     → colonne: 2 e 2, uguali   → ok, risultato (5, 2)
+(2, 2) accanto (3, 2)   → righe: 2 e 3, diverse    → errore</code></pre></div></div>
+<p>Esistono anche due scorciatoie: <code>np.vstack((x, y))</code> (v = verticale) equivale ad <code>axis=0</code>, e <code>np.hstack((x, y))</code> (h = orizzontale) ad <code>axis=1</code>.</p>
+<div class="trap"><p><b>Trappola.</b> Gli array si passano dentro una <strong>tupla</strong>, con doppie parentesi: <code>np.concatenate((x, y))</code>.</p></div>
+
+<h3>Un caso speciale: due vettori diventano una matrice</h3>
+<p>Due vettori 1-D hanno una sola dimensione, quindi <code>concatenate</code> può solo allungarli. <code>vstack</code> invece li mette uno sopra l'altro come righe, creando una dimensione nuova:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>a = np.array([1, 2, 3])
+b = np.array([11, 12, 13])
+print(np.concatenate((a, b)))    <span class="c"># li allunga</span>
+print(np.vstack((a, b)))         <span class="c"># li impila</span></code></pre></div>
+<div class="out"><pre>[ 1  2  3 11 12 13]
+[[ 1  2  3]
+ [11 12 13]]</pre></div></div>
+<p><code>np.concatenate((a, b), axis=1)</code> invece dà <code>AxisError: axis 1 is out of bounds for array of dimension 1</code>, perché un vettore ha solo l'asse 0.</p>
+
+<h3>Dividere un array: split</h3>
+<p><code>np.split</code> fa il contrario di <code>concatenate</code>: taglia un array in pezzi e restituisce una <strong>lista</strong> di array. Si può usare in due modi.</p>
+<p><strong>Con un numero</strong>: dividi in N parti uguali.</p>
+<div class="snippet"><div class="code"><pre><code>x = [7, 7, 9, 9, 8, 8]     np.split(x, 3)   →  [7, 7] | [9, 9] | [8, 8]</code></pre></div></div>
+<p><strong>Con una lista</strong>: scegli tu dove tagliare. I numeri indicano le posizioni <strong>prima</strong> delle quali tagliare.</p>
+<div class="snippet"><div class="code"><pre><code>posizione:   0  1  2  3  4  5
+x:           7  7  9  9  8  8
+                  ↑     ↑
+               taglio  taglio
+               prima   prima
+               del 2   del 4
+
+np.split(x, [2, 4])   →  [7, 7] | [9, 9] | [8, 8]</code></pre></div></div>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.array([7, 7, 9, 9, 8, 8])
+print(np.split(x, 3))
+print(np.split(x, [2, 4]))
+print(np.split(x, 4))</code></pre></div>
+<div class="out"><pre>[array([7, 7]), array([9, 9]), array([8, 8])]
+[array([7, 7]), array([9, 9]), array([8, 8])]
+ValueError: array split does not result in an equal division    <span class="c">← 6 non si divide in 4 parti uguali</span></pre></div></div>
+<p>Siccome il risultato è una lista, puoi spacchettarlo subito (<a href="#p4">P4</a>):</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>grid = np.array([[1, 2, 3, 11, 12, 13],
+                 [4, 5, 6, 14, 15, 16]])
+sinistra, destra = np.hsplit(grid, [3])    <span class="c"># taglia prima della colonna 3</span>
+print(sinistra)
+print(destra)</code></pre></div>
+<div class="out"><pre>[[1 2 3]
+ [4 5 6]]
+[[11 12 13]
+ [14 15 16]]</pre></div></div>
+<p><code>np.hsplit</code> taglia in verticale, separando colonne. <code>np.vsplit</code> taglia in orizzontale, separando righe.</p>
+
+<h3>Cambiare forma: reshape</h3>
+<p><code>reshape</code> prende gli stessi numeri e li dispone in una forma diversa, riempiendo <strong>riga per riga</strong>.</p>
+<div class="snippet"><div class="code"><pre><code>np.arange(6)  →  0  1  2  3  4  5          shape (6,)
+
+.reshape(2, 3):   0  1  2                  riempio la riga 0...
+                  3  4  5                  ...poi la riga 1
+
+.reshape(3, 2):   0  1
+                  2  3
+                  4  5</code></pre></div></div>
+<p>L'unica condizione è che i numeri siano abbastanza per riempire la nuova forma, né uno di più né uno di meno: 6 numeri stanno in 2×3 o in 3×2, ma non in 4×2, che ne richiede 8.</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.arange(6)
+print(x.reshape(2, 3))
+print(x.reshape(4, 2))</code></pre></div>
+<div class="out"><pre>[[0 1 2]
+ [3 4 5]]
+ValueError: cannot reshape array of size 6 into shape (4,2)</pre></div></div>
+
+<h3>Il -1: "calcolalo tu"</h3>
+<p>Al posto di una delle dimensioni puoi scrivere <code>-1</code>, e NumPy la calcola da solo. Si può fare con una dimensione sola.</p>
+<div class="snippet"><div class="code"><pre><code>x ha 6 numeri.   x.reshape(3, -1)   →   3 righe × ? colonne = 6   →   ? = 2</code></pre></div></div>
+<p>L'uso più comune è trasformare un vettore in <strong>colonna</strong>, come hai visto in <a href="#n4">N4</a>:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>v = np.array([1, 2, 3])
+print(v.reshape(-1, 1))     <span class="c"># ? righe × 1 colonna</span></code></pre></div>
+<div class="out"><pre>[[1]
+ [2]
+ [3]]</pre></div></div>
+<p>Lo userai spesso con scikit-learn, che vuole sempre i dati come matrice <code>(campioni, caratteristiche)</code>, anche quando c'è una sola caratteristica.</p>
+<details class="predict"><summary>Dopo <code>y = x.reshape(2, 3); y[0, 0] = 99</code>, cambia anche <code>x</code>?</summary><div class="answer"><pre>[99  1  2  3  4  5]</pre><p>Sì. <code>reshape</code> di solito non copia i numeri: rilegge gli stessi in un'altra forma, quindi è una view (come in <a href="#n5">N5</a>).</p></div></details>
+
+<h3>Salvare e caricare</h3>
+<p>Per salvare un array su disco e ricaricarlo dopo:</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>x = np.arange(10)
+np.save("tempfile", x)              <span class="c"># crea il file tempfile.npy</span>
+y = np.load("tempfile.npy")         <span class="c"># lo rilegge</span>
+print(y)</code></pre></div>
+<div class="out"><pre>[0 1 2 3 4 5 6 7 8 9]</pre></div></div>
+<p>Per salvare più array in un solo file si usa <code>np.savez</code>, dando un nome a ciascuno. Il file che rileggi si usa come un dizionario (<a href="#p5">P5</a>):</p>
+<div class="snippet"><div class="code"><button class="copy" type="button">Copia</button><pre><code>np.savez("archive", x=x, y=np.arange(3))
+archive = np.load("archive.npz")
+print(archive.files)       <span class="c"># i nomi dentro il file</span>
+print(archive["y"])</code></pre></div>
+<div class="out"><pre>['x', 'y']
+[0 1 2]</pre></div></div>
+<p>Un file <code>.npy</code> conserva esattamente tipo e forma. Un file CSV invece è testo, e al caricamento queste informazioni vanno ricostruite.</p>
+
+<h3>Prova tu</h3>
+<details class="predict"><summary><code>np.concatenate((np.zeros((2, 3)), np.ones((1, 3)))).shape</code></summary><div class="answer"><pre>(3, 3)</pre><p>Una sotto l'altra (axis=0): 2 + 1 righe, e le colonne coincidono (3 e 3).</p></div></details>
+<details class="predict"><summary><code>np.arange(12).reshape(3, -1).shape</code></summary><div class="answer"><pre>(3, 4)</pre><p>12 / 3 = 4.</p></div></details>
+<details class="predict"><summary><code>np.split(np.arange(6), [1, 3])</code></summary><div class="answer"><pre>[array([0]), array([1, 2]), array([3, 4, 5])]</pre><p>Tagli prima della posizione 1 e prima della 3.</p></div></details>
+
+<div class="ex"><b>Esercizi del prof:</b> <code>2.3_numpy_array_manipulation.ipynb</code>, esercizi 3 e 4.</div>
+</section>
+
+<!-- QUIZ -->
+<section class="chap" id="quiz">
+<h2><span class="num">✓</span>Riassunto e autoverifica</h2>
+<h3>Lezione 1 in cinque punti</h3>
+<ol class="recap">
+  <li><strong>Le variabili sono riferimenti</strong> a oggetti. I tipi base sono immutabili: ogni "modifica" crea un oggetto nuovo.</li>
+  <li><strong>tuple, list, set, dict</strong> si scelgono in base a mutabilità, ordine, unicità e velocità di ricerca.</li>
+  <li><strong>Le copie sono superficiali</strong> di default. Se anche il contenuto non deve essere condiviso serve <code>copy.deepcopy</code>.</li>
+  <li><strong>Scope</strong>: una funzione può leggere le variabili globali, ma se le assegna ne crea una locale.</li>
+  <li><strong>Comprehension e lambda</strong> accorciano il codice, a patto che resti leggibile.</li>
+</ol>
+<h3>Lezione 2 in cinque punti</h3>
+<ol class="recap">
+  <li>Un array è <strong>un blocco di memoria contiguo con un solo tipo</strong>: da qui vengono memoria ridotta e velocità.</li>
+  <li><strong>Assi e shape</strong>: un'aggregazione elimina l'asse che le passi, un indice intero elimina l'asse che indicizza.</li>
+  <li><strong>Broadcasting</strong>: allinea a destra, aggiungi 1 a sinistra, allarga gli assi da 1, errore se due dimensioni maggiori di 1 sono diverse.</li>
+  <li><strong>Lo slicing dà una view, maschere e liste danno copie</strong>: da questo dipende se modifichi l'originale.</li>
+  <li><strong>concatenate, split, reshape</strong> riorganizzano gli array senza cambiare i numeri.</li>
+</ol>
+
+<h3>Quiz: rispondi senza eseguire</h3>
+<p>Python:</p>
+<details class="predict"><summary><code>a = [1, 2]; b = a; b.append(3)</code>: quanto vale <code>a</code>?</summary><div class="answer"><pre>[1, 2, 3]</pre><p><code>a</code> e <code>b</code> sono due riferimenti alla stessa lista.</p></div></details>
+<details class="predict"><summary><code>"Machine"[1:4]</code></summary><div class="answer"><pre>'ach'</pre><p>Posizioni 1, 2 e 3: il 4 è escluso.</p></div></details>
+<details class="predict"><summary><code>type(("a"))</code> e <code>type(("a",))</code></summary><div class="answer"><pre>str  e  tuple</pre></div></details>
+<details class="predict"><summary><code>bool([])</code> e <code>bool("0")</code></summary><div class="answer"><pre>False  e  True</pre><p>Una lista vuota vale False. <code>"0"</code> è una stringa non vuota, quindi vale True.</p></div></details>
+<p>NumPy, con <code>x = np.arange(12).reshape(3, 4)</code>:</p>
+<details class="predict"><summary><code>x.sum(axis=0).shape</code></summary><div class="answer"><pre>(4,)</pre><p>Da (3, 4) si toglie l'asse 0.</p></div></details>
+<details class="predict"><summary><code>x[1].shape</code> e <code>x[1:2].shape</code></summary><div class="answer"><pre>(4,) (1, 4)</pre><p>Un intero elimina l'asse, una slice lo mantiene.</p></div></details>
+<details class="predict"><summary><code>(x + np.array([1, 2, 3])).shape</code></summary><div class="answer"><pre>ValueError</pre><p>(3, 4) contro (1, 3): 4 e 3 sono diversi ed entrambi maggiori di 1.</p></div></details>
+<details class="predict"><summary><code>(x + np.array([[1], [2], [3]])).shape</code></summary><div class="answer"><pre>(3, 4)</pre><p>La colonna (3, 1) viene allargata sulle 4 colonne.</p></div></details>
+<details class="predict"><summary><code>x[x &gt; 5].shape</code></summary><div class="answer"><pre>(6,)</pre><p>Sono i valori da 6 a 11, in un array 1-D.</p></div></details>
+<details class="predict"><summary>Quali valori dà <code>x[[0, 2], [1, 3]]</code>?</summary><div class="answer"><pre>[ 1 11]</pre><p>Le celle (0, 1) e (2, 3), non un blocco.</p></div></details>
+<details class="predict"><summary>Dopo <code>s = x[:, 0]; s[:] = -1</code> quanto vale <code>x[0, 0]</code>? E con <code>s = x[:, [0]]</code>?</summary><div class="answer"><pre>-1   e   0</pre><p>Nel primo caso <code>s</code> è una view (intero e slice). Nel secondo è una copia, perché c'è una lista.</p></div></details>
+<details class="predict"><summary><code>np.argsort(np.array([3, 1, 2]))</code></summary><div class="answer"><pre>[1 2 0]</pre></div></details>
+</section>
+
+<footer>Basato sulle lezioni <em>Introduction to Python</em> e <em>NumPy: Numerical Python</em> del corso ML4N (repo <a href="https://github.com/Franco-Galante/ml4n-python">Franco-Galante/ml4n-python</a>). Gli output sono stati ottenuti eseguendo il codice con Python 3 e NumPy 2.4. I tempi della sezione N1 variano da computer a computer, e l'ordine di stampa dei set può cambiare. Le soluzioni degli esercizi sono sul portale del corso.</footer>
+</main>
+</div>
+
+<script>
+document.querySelectorAll(".copy").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    var code = btn.parentElement.querySelector("pre").innerText;
+    var done = function (msg) { btn.textContent = msg; setTimeout(function () { btn.textContent = "Copia"; }, 1500); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(function () { done("Copiato"); }, function () { selectText(btn); done("Seleziona e copia"); });
+    } else { selectText(btn); done("Seleziona e copia"); }
+  });
+});
+function selectText(btn) {
+  var pre = btn.parentElement.querySelector("pre");
+  var r = document.createRange(); r.selectNodeContents(pre);
+  var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+}
+</script>
+</body>
+</html>
